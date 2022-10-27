@@ -1,5 +1,6 @@
-// import * as parser from "/parser.js"
+//import * as parser from "/grammar.js"
 
+import * as parser from "./grammar.js";
 
 let gl,
     framebuffer,
@@ -71,7 +72,7 @@ window.onload = function () {
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     makeBuffer(); // TODO uncomment out
-    makeShaders();
+    makeShaders();-
     makeTextures();
     setInitialState();
 
@@ -84,7 +85,7 @@ window.onload = function () {
 //TODO MAIN MQP PORTION
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
-            console.log(cm.getValue());
+            //console.log(cm.getValue());
             var code = cm.getValue();
             console.log(parser.parse(code));
             eval(parser.parse(code));
@@ -373,11 +374,7 @@ function circle( x, y, r ){
     }
 }
 
-/** GRAMMAR **/
-// var fr = new FileReader();
-// const grammar = document.getElementById('grammar')
-// //grammar = fr.readAsText(grammar)
-// console.log(grammar)
-// const parser = peggy.generate(grammar)
-
-
+function test(){
+    console.log('test')
+    return
+}
