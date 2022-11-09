@@ -1,0 +1,148 @@
+<head> </head>
+
+<body>
+  <div id="editor"></div>
+  <canvas id="gl"></canvas>
+</body>
+
+<!-- <input type="file" src="/grammar.txt" id="grammar"> -->
+
+<script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"
+/>
+<link rel="stylesheet" href="style.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/tweakpane@3.0.7/dist/tweakpane.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peggy"></script>
+
+<!-- vertex shader, as simple as possible - -->
+<script id="vertex" type="x-shader/x-vertex">
+  attribute vec2 a_position;
+
+  void main() {
+    gl_Position = vec4( a_position, 0, 1 );
+  }
+</script>
+
+<script id="simulation" type="x-shader/x-fragment">
+  #ifdef GL_ES
+      precision mediump float;
+  #endif
+
+  uniform float time;
+  uniform vec2 resolution;
+  uniform float dA;
+  uniform float dB;
+  uniform float feed;
+  uniform float kill;
+  uniform float audioData;
+  uniform bool diffuse;
+
+  // float dA = 1.;
+  //float dB = 0.5;
+  //float feed =  0.055;
+  //float kill  = 0.062;
+
+  // simulation texture state, swapped each frame
+  uniform sampler2D state;
+
+  // look up individual cell values
+  float getA(int x, int y) {
+    return float(
+      texture2D( state, ( gl_FragCoord.xy + vec2(x, y) ) / resolution ).r
+    );
+  }
+
+  float getB(int x, int y) {
+    return float(
+      texture2D( state, ( gl_FragCoord.xy + vec2(x, y) ) / resolution ).g
+    );
+  }
+
+  float laplaceA(){
+    float sumA = 0.;
+
+    sumA += getA(0,0) * -1.;
+    sumA += getA(-1,0) * 0.2;
+    sumA += getA(1,0) * 0.2;
+    sumA += getA(0,-1) * 0.2;
+    sumA += getA(0,1) * 0.2;
+    sumA += getA(-1,-1) * 0.05;
+    sumA += getA(1,1) * 0.05;
+    sumA += getA(-1,1) * 0.05;
+    sumA += getA(1,-1) * 0.05;
+
+    return sumA;
+  }
+
+  float laplaceB(){
+    float sumB = 0.;
+
+    sumB += getB(0,0) * -1.;
+    sumB += getB(-1,0) * 0.2;
+    sumB += getB(1,0) * 0.2;
+    sumB += getB(0,-1) * 0.2;
+    sumB += getB(0,1) * 0.2;
+    sumB += getB(-1,-1) * 0.05;
+    sumB += getB(1,1) * 0.05;
+    sumB += getB(-1,1) * 0.05;
+    sumB += getB(1,-1) * 0.05;
+
+    return sumB;
+  }
+
+  float random (vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233)))* 43758.5453123);
+  }
+
+  vec4 dif(){
+    vec2 pos = gl_FragCoord.xy / resolution;
+    float a = getA(0,0);
+    float b = getB(0,0);
+    float c = audioData/255.;
+
+    float nextA = a +
+                (dA * laplaceA()
+                - a * b * b
+                + feed * ( 1. - a )) ;
+
+    float nextB = b +
+                (dB * laplaceB()
+                + a * b * b
+                - (kill + feed) * b);
+
+    vec4 result = vec4(nextA, nextB, c, 1.);
+    return result;
+  }
+
+  void main() {
+    vec4 result = vec4(0., 0., 0., 1.);
+
+    if (diffuse){
+      //result += dif();
+      result = vec4(1., 0., 0., 1.);
+    }else{
+      result = vec4(0., 1., 0., 1.);
+    }
+
+    gl_FragColor = result;
+  }
+</script>
+
+<!-- render to screen shader -->
+<script id="render" type="x-shader/x-fragment">
+  #ifdef GL_ES
+  precision mediump float;
+  #endif
+
+  uniform sampler2D uSampler;
+  uniform vec2 resolution;
+
+  void main() {
+    gl_FragColor = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+  }
+</script>
+
+<script type="module" src="script.js"></script>

@@ -18,12 +18,15 @@ ifStatement = "if" expr "then" sentence "else" sentence /
    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" =  diffuse / audio / time / circle / rect / 
+keyword "keyword" =  diffuse / audio / time / circle / rect /
 					triangle / polygon / ellipse / line / floor /
-                    add / mult / subtract / divide / modulo / test/
+                    add / mult / subtract / divide / modulo / test /
                     colorA / colorB / rateA / rateB / feed / kill / $[^{} \t\n\r] +
 
-diffuse  = "diffuse" { return "@diffuse"; }	// main function for reactive diffusion
+diffuse  = "diffuse" { 
+
+    return setDiffuse();  
+}
 
 // Input and other
 audio = "audio" { return "@audio";} //i want to be able to set audio on and off
@@ -32,7 +35,29 @@ test = "test" { return "@test" }
 
 // Shapes and styles
 circle = "circle" { return "@circle"; }
-rect = "rect" { return "@rect"; }
+rect = "rect" _ x:primary _ y:primary _ w:primary _ h:primary { 
+   function rect( x, y, w, h ){    // TODO: Fix coordinates
+    for (var i = 0; i < window.innerWidth; i++) {
+        for (var j = 0; j < window.innerHeight; j++) {
+            if (
+                i >= x &&
+                i <= x + w &&
+                j >= y &&
+                j <= h
+            ) {
+                poke(i, j, 0, 255, textureBack);
+            } else {
+                poke(i, j, 255, 0, textureBack);
+            }
+        }
+      }
+   }
+
+   return "@rect"
+   //rect(x, y, w, h)
+   }
+
+// rect = "rect" { return ["@rect"]}
 triangle = "triangle" { return "@triangle"; }
 polygon = "polygon" { return "@polygon"; }
 ellipse = "ellipse" { return "@ellipse"; }

@@ -1,33 +1,16 @@
-//import * as parser from "/grammar.js"
-
 import * as parser from "./grammar.js";
+import * as shape from "./functions/shapes.js"
 
-let gl,
-    framebuffer,
-    simulationProgram,
-    drawProgram,
-    uTime,
-    uSimulationState,
-    uRes,
-    uAudio,
-    textureBack,
-    textureFront,
+let gl, framebuffer, simulationProgram, drawProgram,
+    uTime, uSimulationState, uRes, uAudio, uDA, uDB,
+    uFeed, uKill, uSize, uDiffuse,
+    textureBack, textureFront,
     dimensions = { width: null, height: null },
-    dA,
-    dB,
-    feed,
-    k,
-    size,
-    audio,
-    audioData,
-    bufferLength,
-    analyser,
-    audioContext,
-    audioElement,
+    dA, dB, feed, kill, size, diffuse = false,
+    audio, audioData, bufferLength, analyser, audioContext, audioElement,
     playing = false,
     mic = false,
-    width,
-    height;
+    width, height;
 
 window.onload = function () {
     navigator.mediaDevices
@@ -66,29 +49,30 @@ window.onload = function () {
     gl = canvas.getContext("webgl");
     canvas.width = dimensions.width = window.innerWidth;
     canvas.height = dimensions.height = window.innerHeight;
+    width = canvas.width,
+    height = canvas.height;
 
     // define drawing area of webgl canvas. bottom corner, width / height
-    // XXX can't remember why we need the *2!
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-    makeBuffer(); // TODO uncomment out
-    makeShaders();-
+    makeBuffer();
+    makeShaders();
     makeTextures();
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value: "function myScript(){return 100;}\n",
+        value: "diffuse\n",
         mode: "javascript",
         lineNumbers: true
     });
 
-//TODO MAIN MQP PORTION
+// TODO: MAIN MQP PORTION
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
-            //console.log(cm.getValue());
             var code = cm.getValue();
-            console.log(parser.parse(code));
-            eval(parser.parse(code));
+            var parsedCode = parser.parse(code)
+            //console.log(parsedCode);
+            eval("(" + parsedCode + ")");
         },
     });
     /* run function, parse, then feed output to eval */
@@ -99,27 +83,26 @@ function poke(x, y, valA, valB, texture) {
     gl.texSubImage2D(
         gl.TEXTURE_2D,
         0,
-        // x offset, y offset, width, height
-        x,
+        x,  // x offset, y offset, width, height
         y,
         1,
         1,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        // is supposed to be a typed array
-        new Uint8Array([valA, valB, 0, 1])
+        
+        new Uint8Array([valA, valB, 0, 1])  // is supposed to be a typed array
     );
 }
 
-function setInitialState() {
-    width = dimensions.width,
-    height = dimensions.height;
+var poking = function poking(x, y, valA, valB){
+    poke(x, y, valA, valB, textureBack)
+}
 
+function setInitialState() {
     var x = width/2 - 100,
         y = height/2 - 200;
 
-
-    rect(x, y, 100, 200);
+    shape.rect(x, y, 100, 200);
 }
 
 function makeBuffer() {
@@ -140,71 +123,70 @@ function makeBuffer() {
 
 function makeShaders() {
     // create vertex shader
-    let shaderScript = document.getElementById("vertex");
-    let shaderSource = shaderScript.text;
-    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, shaderSource);
-    gl.compileShader(vertexShader);
+    let shaderScript = document.getElementById('vertex')
+    let shaderSource = shaderScript.text
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER)
+    gl.shaderSource(vertexShader, shaderSource)
+    gl.compileShader(vertexShader)
 
     // create fragment shader
-    shaderScript = document.getElementById("render");
-    shaderSource = shaderScript.text;
-    const drawFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(drawFragmentShader, shaderSource);
-    gl.compileShader(drawFragmentShader);
-    console.log(gl.getShaderInfoLog(drawFragmentShader));
+    shaderScript = document.getElementById('render')
+    shaderSource = shaderScript.text
+    const drawFragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
+    gl.shaderSource(drawFragmentShader, shaderSource)
+    gl.compileShader(drawFragmentShader)
+    console.log(gl.getShaderInfoLog(drawFragmentShader))
 
     // create render program that draws to screen
-    drawProgram = gl.createProgram();
-    gl.attachShader(drawProgram, vertexShader);
-    gl.attachShader(drawProgram, drawFragmentShader);
+    drawProgram = gl.createProgram()
+    gl.attachShader(drawProgram, vertexShader)
+    gl.attachShader(drawProgram, drawFragmentShader)
 
-    gl.linkProgram(drawProgram);
-    gl.useProgram(drawProgram);
+    gl.linkProgram(drawProgram)
+    gl.useProgram(drawProgram)
 
-    uRes = gl.getUniformLocation(drawProgram, "resolution");
-    gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    uRes = gl.getUniformLocation(drawProgram, 'resolution')
+    gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
     // get position attribute location in shader
-    let position = gl.getAttribLocation(drawProgram, "a_position");
-    
+    let position = gl.getAttribLocation(drawProgram, 'a_position')
     // enable the attribute
-    gl.enableVertexAttribArray(position);
-    
+    gl.enableVertexAttribArray(position)
     // this will point to the vertices in the last bound array buffer.
-    // In this example, we only use one array buffer, where we're storing
+    // In this example, we only use one array buffer, where we're storing 
     // our vertices
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
 
-    shaderScript = document.getElementById("simulation");
-    shaderSource = shaderScript.text;
-    const simulationFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(simulationFragmentShader, shaderSource);
-    gl.compileShader(simulationFragmentShader);
-    console.log(gl.getShaderInfoLog(simulationFragmentShader));
+    shaderScript = document.getElementById('simulation')
+    shaderSource = shaderScript.text
+    const simulationFragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
+    gl.shaderSource(simulationFragmentShader, shaderSource)
+    gl.compileShader(simulationFragmentShader)
+    console.log(gl.getShaderInfoLog(simulationFragmentShader))
 
     // create simulation program
-    simulationProgram = gl.createProgram();
-    gl.attachShader(simulationProgram, vertexShader);
-    gl.attachShader(simulationProgram, simulationFragmentShader);
+    simulationProgram = gl.createProgram()
+    gl.attachShader(simulationProgram, vertexShader)
+    gl.attachShader(simulationProgram, simulationFragmentShader)
 
-    gl.linkProgram(simulationProgram);
-    gl.useProgram(simulationProgram);
+    gl.linkProgram(simulationProgram)
+    gl.useProgram(simulationProgram)
 
     uRes = gl.getUniformLocation(simulationProgram, "resolution");
     gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     // find a pointer to the uniform "time" in our fragment shader
     uTime = gl.getUniformLocation(simulationProgram, "time");
-    // uDA = gl.getUniformLocation(simulationProgram, "dA");
-    // uDB = gl.getUniformLocation(simulationProgram, "dB");
-    // uFeed = gl.getUniformLocation(simulationProgram, "feed");
-    // uKill = gl.getUniformLocation(simulationProgram, "kill");
-    // uSize = gl.getUniformLocation(simulationProgram, "size");
+    uDA = gl.getUniformLocation(simulationProgram, "dA");
+    uDB = gl.getUniformLocation(simulationProgram, "dB");
+    uFeed = gl.getUniformLocation(simulationProgram, "feed");
+    uKill = gl.getUniformLocation(simulationProgram, "kill");
+    uSize = gl.getUniformLocation(simulationProgram, "size");
+    uDiffuse = gl.getUniformLocation(simulationProgram, "diffuse");
 
     uAudio = gl.getUniformLocation(simulationProgram, "audioData");
 
-    //uSimulationState = gl.getUniformLocation( simulationProgram, 'state' )
+    uSimulationState = gl.getUniformLocation( simulationProgram, 'state' );
 
     position = gl.getAttribLocation(simulationProgram, "a_position");
     gl.enableVertexAttribArray(simulationProgram);
@@ -260,18 +242,15 @@ function makeTextures() {
     // Create a framebuffer and attach the texture.
     framebuffer = gl.createFramebuffer();
 
-    diffuse();
+    render();
 }
 
 // keep track of time via incremental frame counter
 let time = 0;
-function diffuse() {
-    // schedules render to be called the next time the video card requests
-    // a frame of video
-    window.requestAnimationFrame(diffuse);
+function render() {
+    window.requestAnimationFrame(render);
 
-    // use our simulation shader
-    gl.useProgram(simulationProgram);
+    gl.useProgram(simulationProgram);    // use our simulation shader
 
     if (mic === true) {
         analyser.getByteFrequencyData(audio);
@@ -281,50 +260,46 @@ function diffuse() {
         }
         audioData = sum / bufferLength;
         kill = getK(audioData);
-        //console.log(kill)
     }
 
     // update time on CPU and GPU
     time++;
     gl.uniform1f(uTime, time);
-    // gl.uniform1f(uDA, dA);
-    // gl.uniform1f(uDB, dB);
-    // gl.uniform1f(uFeed, feed);
-    // gl.uniform1f(uKill, kill);
-    // gl.uniform1f(uSize, size);
+    gl.uniform1f(uDA, dA);
+    gl.uniform1f(uDB, dB);
+    gl.uniform1f(uFeed, feed);
+    gl.uniform1f(uKill, kill);
+    gl.uniform1f(uSize, size);
+    gl.uniform1f(uDiffuse, diffuse);
     gl.uniform1f(uAudio, audioData);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    // use the framebuffer to write to our texFront texture
-    gl.framebufferTexture2D(
+    
+    gl.framebufferTexture2D(    // use the framebuffer to write to our texFront texture
         gl.FRAMEBUFFER,
         gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D,
         textureFront,
         0
     );
-    // set viewport to be the size of our state (game of life simulation)
-    // here, this represents the size that will be drawn onto our texture
-    gl.viewport(0, 0, dimensions.width, dimensions.height);
 
-    // in our shaders, read from texBack, which is where we poked to
-    gl.activeTexture(gl.TEXTURE0);
+    gl.viewport(0, 0, dimensions.width, dimensions.height);     // set viewport to be the size of our state 
+
+    gl.activeTexture(gl.TEXTURE0);                              // in our shaders, read from texBack, which is where we poked to
     gl.bindTexture(gl.TEXTURE_2D, textureBack);
     gl.uniform1i(uSimulationState, 0);
-    // run shader
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    
+    gl.drawArrays(gl.TRIANGLES, 0, 6);                         // run shader
 
-    // swap our front and back textures
-    let tmp = textureFront;
+    let tmp = textureFront;                                    // swap our front and back textures
     textureFront = textureBack;
     textureBack = tmp;
 
-    
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);       // use the default framebuffer object by passing null
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);                   // use the default framebuffer object by passing null
     gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
-    gl.bindTexture(gl.TEXTURE_2D, textureFront);    // select the texture we would like to draw to the screen.
-    gl.useProgram(drawProgram);                     // use our drawing (copy) shader
-    gl.drawArrays(gl.TRIANGLES, 0, 6);              // put simulation on screen
+    gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
+    gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
+    gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
 }
 
 function map(value, min1, max1, min2, max2) {
@@ -335,29 +310,13 @@ function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
 
-
 /**********SHAPE FUNCTIONS ********/
 
 /*
 Draw a rectangle based on given width, height, x coord, and y coord
 the (x,y) is the top left corner
 */
-function rect( x, y, w, h ){    // TODO: Fix coordinates 
-    for (var i = 0; i < width; i++) {
-        for (var j = 0; j < height; j++) {
-            if (
-                i >= x &&
-                i <= x + w &&
-                j >= y &&
-                j <= h
-            ) {
-                poke(i, j, 0, 255, textureBack);
-            } else {
-                poke(i, j, 255, 0, textureBack);
-            }
-        }
-    }
-}
+
 
 function circle( x, y, r ){
     for (var i = 0; i < width; i++) {
@@ -374,7 +333,17 @@ function circle( x, y, r ){
     }
 }
 
-function test(){
-    console.log('test')
-    return
+// Diffuse function
+export const setDiffuse = function setDiffuse(){
+    console.log(diffuse)
+    diffuse = !diffuse
+    gl.uniform1f(uDiffuse, diffuse);
+    console.log("testtt diffuse")
+    return 
 }
+
+export var getDiff = ()=>{
+    return String(diffuse)
+}
+
+export default poking

@@ -1,33 +1,4 @@
-<head> </head>
-
-<body>
-  <div id="editor"></div>
-  <canvas id="gl"></canvas>
-</body>
-
-<!-- <input type="file" src="/grammar.txt" id="grammar"> -->
-
-<script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"
-/>
-<link rel="stylesheet" href="style.css" />
-
-<script src="https://cdn.jsdelivr.net/npm/tweakpane@3.0.7/dist/tweakpane.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/peggy"></script>
-
-<!-- vertex shader, as simple as possible -->
-<script id="vertex" type="x-shader/x-vertex">
-  attribute vec2 a_position;
-
-  void main() {
-    gl_Position = vec4( a_position, 0, 1 );
-  }
-</script>
-
-<script id="simulation" type="x-shader/x-fragment">
-  #ifdef GL_ES
+#ifdef GL_ES
       precision mediump float;
   #endif
 
@@ -116,22 +87,3 @@
 
       gl_FragColor = vec4(result, 1.);
   }
-</script>
-
-<!-- render to screen shader -->
-<script id="render" type="x-shader/x-fragment">
-  #ifdef GL_ES
-  precision mediump float;
-  #endif
-
-  uniform sampler2D uSampler;
-  uniform vec2 resolution;
-
-  void main() {
-    gl_FragColor = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
-  }
-</script>
-
-<script type="module" src="grammar.js"></script>
-
-<script type="module" src="script.js"></script>

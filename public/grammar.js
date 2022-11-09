@@ -255,12 +255,34 @@ function peg$parse(input, options) {
   var peg$f2 = function(expr) { return expr.join("") };
   var peg$f3 = function(i) { return `${i.join("")}`; };
   var peg$f4 = function(left, right) { return parseFloat(left.join("") + "." +   right.join("")); };
-  var peg$f5 = function() { return "@diffuse"; };
+  var peg$f5 = function() { 
+    return "setDiffuse()";  
+};
   var peg$f6 = function() { return "@audio";};
   var peg$f7 = function() { return Date.getTime; };
   var peg$f8 = function() { return "@test" };
   var peg$f9 = function() { return "@circle"; };
-  var peg$f10 = function() { return "@rect"; };
+  var peg$f10 = function(x, y, w, h) { 
+   function rect( x, y, w, h ){    // TODO: Fix coordinates
+    for (var i = 0; i < window.innerWidth; i++) {
+        for (var j = 0; j < window.innerHeight; j++) {
+            if (
+                i >= x &&
+                i <= x + w &&
+                j >= y &&
+                j <= h
+            ) {
+                poke(i, j, 0, 255, textureBack);
+            } else {
+                poke(i, j, 255, 0, textureBack);
+            }
+        }
+      }
+   }
+
+   return "@rect"
+   //rect(x, y, w, h)
+   };
   var peg$f11 = function() { return "@triangle"; };
   var peg$f12 = function() { return "@polygon"; };
   var peg$f13 = function() { return "@ellipse"; };
@@ -1015,7 +1037,7 @@ function peg$parse(input, options) {
   }
 
   function peg$parserect() {
-    var s0, s1;
+    var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     s0 = peg$currPos;
     if (input.substr(peg$currPos, 4) === peg$c11) {
@@ -1026,10 +1048,40 @@ function peg$parse(input, options) {
       if (peg$silentFails === 0) { peg$fail(peg$e19); }
     }
     if (s1 !== peg$FAILED) {
-      peg$savedPos = s0;
-      s1 = peg$f10();
+      s2 = peg$parse_();
+      s3 = peg$parseprimary();
+      if (s3 !== peg$FAILED) {
+        s4 = peg$parse_();
+        s5 = peg$parseprimary();
+        if (s5 !== peg$FAILED) {
+          s6 = peg$parse_();
+          s7 = peg$parseprimary();
+          if (s7 !== peg$FAILED) {
+            s8 = peg$parse_();
+            s9 = peg$parseprimary();
+            if (s9 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s0 = peg$f10(s3, s5, s7, s9);
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
     }
-    s0 = s1;
 
     return s0;
   }
