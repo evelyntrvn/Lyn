@@ -37,13 +37,9 @@
   uniform float dB;
   uniform float feed;
   uniform float kill;
+  uniform float size;
   uniform float audioData;
   uniform bool diffuse;
-
-  // float dA = 1.;
-  //float dB = 0.5;
-  //float feed =  0.055;
-  //float kill  = 0.062;
 
   // simulation texture state, swapped each frame
   uniform sampler2D state;
@@ -59,6 +55,10 @@
     return float(
       texture2D( state, ( gl_FragCoord.xy + vec2(x, y) ) / resolution ).g
     );
+  }
+
+  vec4 getPrev() {
+    return texture2D( state, ( gl_FragCoord.xy ) / resolution );
   }
 
   float laplaceA(){
@@ -104,12 +104,12 @@
     float c = audioData/255.;
 
     float nextA = a +
-                (dA * laplaceA()
+                (dA * laplaceA() * size
                 - a * b * b
                 + feed * ( 1. - a )) ;
 
     float nextB = b +
-                (dB * laplaceB()
+                (dB * laplaceB() * size
                 + a * b * b
                 - (kill + feed) * b);
 
@@ -117,16 +117,19 @@
     return result;
   }
 
+  void setVar(){
+
+  }
+
   void main() {
-    vec4 result = vec4(0., 0., 0., 1.);
+    vec4 result = getPrev();
 
     if (diffuse){
-      //result += dif();
-      result = vec4(1., 0., 0., 1.);
+      result = dif();
     }else{
-      result = vec4(0., 1., 0., 1.);
+      result = getPrev();
     }
-
+  
     gl_FragColor = result;
   }
 </script>

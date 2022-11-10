@@ -18,8 +18,8 @@ window.onload = function () {
         .then(function (stream) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             audioElement = document.querySelector("audio");
-            //const track = audioContext.createMediaStreamSource(stream);
-            const track = audioContext.createMediaElementSource(audioElement);
+            const track = audioContext.createMediaStreamSource(stream);
+            //const track = audioContext.createMediaElementSource(audioElement);
 
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
@@ -61,7 +61,7 @@ window.onload = function () {
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value: "diffuse\n",
+        value: "rateB(30)\n",
         mode: "javascript",
         lineNumbers: true
     });
@@ -70,39 +70,48 @@ window.onload = function () {
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
             var code = cm.getValue();
+            console.log(code)
             var parsedCode = parser.parse(code)
-            //console.log(parsedCode);
+            console.log(parsedCode);
             eval("(" + parsedCode + ")");
         },
     });
     /* run function, parse, then feed output to eval */
 };
 
-function poke(x, y, valA, valB, texture) {
+function poke(x, y, r, g, b, texture) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texSubImage2D(
-        gl.TEXTURE_2D,
-        0,
-        x,  // x offset, y offset, width, height
-        y,
-        1,
-        1,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        
-        new Uint8Array([valA, valB, 0, 1])  // is supposed to be a typed array
+        gl.TEXTURE_2D, 0,
+        // x offset, y offset, width, height
+        x, y, 1, 1,
+        gl.RGBA, gl.UNSIGNED_BYTE,
+        // is supposed to be a typed array
+        new Uint8Array([r, g, b, 255])  
     );
 }
 
-var poking = function poking(x, y, valA, valB){
-    poke(x, y, valA, valB, textureBack)
+var poking = function poking(x, y, r, g, b){
+    poke(x, y, r, g, b, textureBack)
 }
 
 function setInitialState() {
+    dA = 1;
+    dB = 1.5;
+    feed = 0.55;
+    kill = 0.062;
+    size = 3;
+
+    gl.uniform1f(uDA, dA);
+    gl.uniform1f(uDB, dB);
+    gl.uniform1f(uFeed, feed);
+    gl.uniform1f(uKill, kill);
+    gl.uniform1f(uSize, size);
+
     var x = width/2 - 100,
         y = height/2 - 200;
 
-    shape.rect(x, y, 100, 200);
+    shape.rect(0, 0, 100, 200);
 }
 
 function makeBuffer() {
@@ -334,12 +343,35 @@ function circle( x, y, r ){
 }
 
 // Diffuse function
-export const setDiffuse = function setDiffuse(){
-    console.log(diffuse)
+const setDiffuse = function setDiffuse(){
     diffuse = !diffuse
     gl.uniform1f(uDiffuse, diffuse);
-    console.log("testtt diffuse")
     return 
+}
+
+function setRateA(x){
+    dA = x
+    gl.uniform1f(uDA, dA);
+}
+
+function setRateB(x){
+    dB = x
+    gl.uniform1f(uDB, dB);
+}
+
+function setKill(x){
+    kill = x
+    gl.uniform1f(uKill, kill);
+}
+
+function setFeed(x){
+    feed = x
+    gl.uniform1f(uFeed, feed);
+}
+
+function setSize(x){
+    size = x
+    gl.uniform1f(uSize, size);
 }
 
 export var getDiff = ()=>{

@@ -21,6 +21,7 @@ export function rect( x, y, w, h ){    // TODO: Fix coordinates
             }
         }
     }
+    console.log("rect")
 }
 
 export function circle( x, y, r ){

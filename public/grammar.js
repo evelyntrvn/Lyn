@@ -255,33 +255,31 @@ function peg$parse(input, options) {
   var peg$f2 = function(expr) { return expr.join("") };
   var peg$f3 = function(i) { return `${i.join("")}`; };
   var peg$f4 = function(left, right) { return parseFloat(left.join("") + "." +   right.join("")); };
-  var peg$f5 = function() { 
-    return "setDiffuse()";  
-};
+  var peg$f5 = function() { return "setDiffuse()";};
   var peg$f6 = function() { return "@audio";};
   var peg$f7 = function() { return Date.getTime; };
   var peg$f8 = function() { return "@test" };
   var peg$f9 = function() { return "@circle"; };
   var peg$f10 = function(x, y, w, h) { 
-   function rect( x, y, w, h ){    // TODO: Fix coordinates
-    for (var i = 0; i < window.innerWidth; i++) {
-        for (var j = 0; j < window.innerHeight; j++) {
-            if (
-                i >= x &&
-                i <= x + w &&
-                j >= y &&
-                j <= h
-            ) {
-                poke(i, j, 0, 255, textureBack);
-            } else {
-                poke(i, j, 255, 0, textureBack);
-            }
-        }
-      }
-   }
-
-   return "@rect"
+   var r = `shape.rect( ${x}, ${y}, ${w}, ${h} )`
+   return r
    //rect(x, y, w, h)
+//    function rect( ${x}, ${y}, ${w}, ${h} ){
+//     for (var i = 0; i < window.innerWidth; i++) {
+//         for (var j = 0; j < window.innerHeight; j++) {
+//             if (
+//                 i >= x &&
+//                 i <= x + w &&
+//                 j >= y &&
+//                 j <= h
+//             ) {
+//                 poke(i, j, 0, 255, textureBack);
+//             } else {
+//                 poke(i, j, 255, 0, textureBack);
+//             }
+//         }
+//       }
+//    }
    };
   var peg$f11 = function() { return "@triangle"; };
   var peg$f12 = function() { return "@polygon"; };
@@ -298,10 +296,10 @@ function peg$parse(input, options) {
   var peg$f23 = function() { return "@%"; };
   var peg$f24 = function(h) { return `@colorA(${h})` ; };
   var peg$f25 = function(h) { return `@colorB(${h})` ; };
-  var peg$f26 = function(r) { return `@rateA(${r})` ; };
-  var peg$f27 = function(r) { return `@rateB(${r})` ; };
-  var peg$f28 = function(f) { return `@feed(${f})` ; };
-  var peg$f29 = function(k) { return `@kill(${k})` ; };
+  var peg$f26 = function(r) { return `setRateA(${r})` ; };
+  var peg$f27 = function(r) { return `setRateB(${r})` ; };
+  var peg$f28 = function(f) { return `setFeed(${f})` ; };
+  var peg$f29 = function(k) { return `setKill(${k})` ; };
   var peg$currPos = 0;
   var peg$savedPos = 0;
   var peg$posDetailsCache = [{ line: 1, column: 1 }];
