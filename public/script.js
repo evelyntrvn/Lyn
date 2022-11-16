@@ -18,8 +18,8 @@ window.onload = function () {
         .then(function (stream) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             audioElement = document.querySelector("audio");
-            const track = audioContext.createMediaStreamSource(stream);
-            //const track = audioContext.createMediaElementSource(audioElement);
+            //const track = audioContext.createMediaStreamSource(stream);
+            const track = audioContext.createMediaElementSource(audioElement);
 
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
@@ -35,6 +35,8 @@ window.onload = function () {
             console.log(audio);
             //getAudioData(audio)
             mic = true;
+            audioElement.play();
+
 
             audioElement.addEventListener(
                 "ended",
