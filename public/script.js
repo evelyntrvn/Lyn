@@ -6,7 +6,7 @@ let gl, framebuffer, simulationProgram, drawProgram,
     uFeed, uKill, uSize, uDiffuse,
     textureBack, textureFront,
     dimensions = { width: null, height: null },
-    dA, dB, feed, kill, size, diffuse = false,
+    dA, dB, f, k, s, diffuse = false,
     audio, audioData, bufferLength, analyser, audioContext, audioElement,
     playing = false,
     mic = false,
@@ -100,15 +100,15 @@ var poking = function poking(x, y, r, g, b){
 function setInitialState() {
     dA = 1;
     dB = 1.5;
-    feed = 0.55;
-    kill = 0.062;
-    size = 3;
+    f = 0.55;
+    k = 0.062;
+    s = 3;
 
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
-    gl.uniform1f(uFeed, feed);
-    gl.uniform1f(uKill, kill);
-    gl.uniform1f(uSize, size);
+    gl.uniform1f(uFeed, f);
+    gl.uniform1f(uKill, k);
+    gl.uniform1f(uSize, s);
 
     var x = width/2 - 100,
         y = height/2 - 200;
@@ -270,7 +270,7 @@ function render() {
             sum += audio[i];
         }
         audioData = sum / bufferLength;
-        kill = getK(audioData);
+        k = getK(audioData);
     }
 
     // update time on CPU and GPU
@@ -278,9 +278,9 @@ function render() {
     gl.uniform1f(uTime, time);
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
-    gl.uniform1f(uFeed, feed);
-    gl.uniform1f(uKill, kill);
-    gl.uniform1f(uSize, size);
+    gl.uniform1f(uFeed, f);
+    gl.uniform1f(uKill, k);
+    gl.uniform1f(uSize, s);
     gl.uniform1f(uDiffuse, diffuse);
     gl.uniform1f(uAudio, audioData);
 
@@ -351,29 +351,29 @@ const setDiffuse = function setDiffuse(){
     return 
 }
 
-function setRateA(x){
+function rateA(x){
     dA = x
     gl.uniform1f(uDA, dA);
 }
 
-function setRateB(x){
+function rateB(x){
     dB = x
     gl.uniform1f(uDB, dB);
 }
 
-function setKill(x){
-    kill = x
-    gl.uniform1f(uKill, kill);
+function kill(x){
+    k = x
+    gl.uniform1f(uKill, k);
 }
 
-function setFeed(x){
-    feed = x
-    gl.uniform1f(uFeed, feed);
+function feed(x){
+    f = x
+    gl.uniform1f(uFeed, f);
 }
 
-function setSize(x){
-    size = x
-    gl.uniform1f(uSize, size);
+function size(x){
+    s = x
+    gl.uniform1f(uSize, s);
 }
 
 export var getDiff = ()=>{

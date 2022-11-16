@@ -23,12 +23,10 @@ ifStatement = "if" expr "then" sentence "else" sentence /
    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = float/ diffuse / audio / time / circle / rect /
+keyword "keyword" = difFct / audio / time / circle / rect /
 					triangle / polygon / ellipse / line / floor /
                     add / mult / subtract / divide / modulo / test /
                     colorA / colorB / rateA / rateB / feed / kill  / primary / $[^{} \t\n\r] +
-
-diffuse  = "diffuse" { return "setDiffuse()";}
 
 // Input and other
 audio = "audio" { return "@audio";} //i want to be able to set audio on and off
@@ -61,9 +59,14 @@ divide = "/" { return "@/"; }
 modulo = "%" { return "@%"; }
 
 /****** Diffuse attributes ****/
+difFct = diffuse / rateA / rateB / feed / kill / size 
+
+diffuse  = "diffuse" { return "setDiffuse()";}
+
 colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
 colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
-rateA = "rateA(" r:primary ")"{ return `setRateA(${r})` ; } //change to primary
-rateB = "rateB(" r:primary ")"{ return `setRateB(${r})` ; } 
-feed = "feed(" f:primary ")" { return `setFeed(${f})` ; } 
-kill = "kill(" k:primary ")" { return `setKill(${k})` ; } 
+rateA = "rateA(" r:primary ")"{ return `rateA(${r})` ; } //change to primary
+rateB = "rateB(" r:primary ")"{ return `rateB(${r})` ; } 
+feed = "feed(" f:primary ")" { return `feed(${f})` ; } 
+kill = "kill(" k:primary ")" { return `kill(${k})` ; } 
+size = "size(" s:primary ")" { return `size(${s})` ; } 
