@@ -1,4 +1,5 @@
 import * as parser from "./grammar.js";
+// import {checkAudio, setDiffuse, rateA, rateB, kill, feed, size} from "./functions/diffuse.js"
 import * as shape from "./functions/shapes.js"
 
 let gl, framebuffer, simulationProgram, drawProgram,
@@ -344,40 +345,52 @@ function circle( x, y, r ){
     }
 }
 
-// Diffuse function
-const setDiffuse = function setDiffuse(){
-    diffuse = !diffuse
-    gl.uniform1f(uDiffuse, diffuse);
-    return 
+export var getDiff = ()=>{
+    return String(diffuse)
 }
 
-function rateA(x){
-    dA = x
+// Diffuse function
+export function setDiffuse(x){
+    
+    diffuse = x
+    gl.uniform1f(uDiffuse, diffuse); 
+    console.log(diffuse)
+}
+
+export function rateA(x){
+    dA = checkAudio(x)
     gl.uniform1f(uDA, dA);
 }
 
-function rateB(x){
-    dB = x
+export function rateB(x){
+    dB = checkAudio(x)
     gl.uniform1f(uDB, dB);
 }
 
-function kill(x){
-    k = x
+export function kill(x){
+    k = checkAudio(x)
     gl.uniform1f(uKill, k);
 }
 
-function feed(x){
-    f = x
+export function feed(x){
+    f = checkAudio(x)
     gl.uniform1f(uFeed, f);
 }
 
-function size(x){
-    s = x
+export function size(x){
+    s = checkAudio(x)
     gl.uniform1f(uSize, s);
 }
 
-export var getDiff = ()=>{
-    return String(diffuse)
+export function checkAudio(x){
+    console.log(x)
+    if(x ==="audio"){
+        console.log("setting audio")
+        return audioData;
+    }else {
+        console.log("no audio")
+        return x
+    }
 }
 
 export default poking

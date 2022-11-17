@@ -4,12 +4,15 @@ term "term" = body:(keyword / sentence) _ { return body; } // keyword to word
 POINT = "." {return "point" }
 DIGIT = [0-9]
 INTDIGIT = [1-9]
+TRUE = "true" / "True" { return "true" }
+FALSE = "false" / "False" { return "false" }
 
-primary "primary" = float/ int
+primary "primary" = float / int
 
 float = first:int dec:dec { return parseFloat(`${first}`) + parseFloat(`${dec}`); } 
 dec = point:POINT num:DIGIT+ { return parseFloat("." + `${num}`); }
 int = first:INTDIGIT dig:DIGIT* { return parseInt(`${text()}`); }
+boolean  = TRUE / FALSE
 
 regular = [^{}]+ { return text(); }
 expr = regular* 
@@ -29,7 +32,7 @@ keyword "keyword" = difFct / audio / time / circle / rect /
                     colorA / colorB / rateA / rateB / feed / kill  / primary / $[^{} \t\n\r] +
 
 // Input and other
-audio = "audio" { return "@audio";} //i want to be able to set audio on and off
+audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
 time = "time" { return Date.getTime; }
 test = "test" { return "@test" }
 
@@ -51,22 +54,22 @@ hex = h:[0-9A-Fa-f]*{ return `${h.join("")}` } //is there anyways to specify a c
 
 
 // Math
-floor = "floor" { return "@floor"; }
-add = "+" { return "@+"; }
-mult = "*" { return "@*"; }
-subtract = "-" { return "@-"; }
-divide = "/" { return "@/"; }
-modulo = "%" { return "@%"; }
+floor = "floor" { return "floor"; }
+add = "+" { return "+"; }
+mult = "*" { return "*"; }
+subtract = "-" { return "-"; }
+divide = "/" { return "/"; }
+modulo = "%" { return "%"; }
 
 /****** Diffuse attributes ****/
 difFct = diffuse / rateA / rateB / feed / kill / size 
-
-diffuse  = "diffuse" { return "setDiffuse()";}
+difInput = primary / audio
+diffuse  = "diffuse(" bool:boolean ")"{ return `setDiffuse(${bool})`;}
 
 colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
 colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
-rateA = "rateA(" r:primary ")"{ return `rateA(${r})` ; } //change to primary
-rateB = "rateB(" r:primary ")"{ return `rateB(${r})` ; } 
-feed = "feed(" f:primary ")" { return `feed(${f})` ; } 
-kill = "kill(" k:primary ")" { return `kill(${k})` ; } 
-size = "size(" s:primary ")" { return `size(${s})` ; } 
+rateA = "rateA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
+rateB = "rateB(" r:difInput ")"{ return `rateB(${r})` ; } 
+feed = "feed(" f:difInput ")" { return `feed(${f})` ; } 
+kill = "kill(" k:difInput ")" { return `kill(${k})` ; } 
+size = "size(" s:difInput ")" { return `size(${s})` ; } 
