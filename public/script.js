@@ -345,9 +345,21 @@ function circle( x, y, r ){
     }
 }
 
-export var getDiff = ()=>{
-    return String(diffuse)
+// export var getDiff = ()=>{
+//     return String(diffuse)
+// }
+
+
+function wait(milliseconds){
+    //let milliseconds //= sec*1000
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+      
 }
+
 
 // Diffuse function
 export function setDiffuse(x){

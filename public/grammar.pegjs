@@ -29,7 +29,7 @@ ifStatement = "if" expr "then" sentence "else" sentence /
 keyword "keyword" = difFct / audio / time / circle / rect /
 					triangle / polygon / ellipse / line / floor /
                     add / mult / subtract / divide / modulo / test /
-                    colorA / colorB / rateA / rateB / feed / kill  / primary / $[^{} \t\n\r] +
+                    colorA / colorB / rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
@@ -68,8 +68,11 @@ diffuse  = "diffuse(" bool:boolean ")"{ return `setDiffuse(${bool})`;}
 
 colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
 colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
+
 rateA = "rateA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
 rateB = "rateB(" r:difInput ")"{ return `rateB(${r})` ; } 
 feed = "feed(" f:difInput ")" { return `feed(${f})` ; } 
 kill = "kill(" k:difInput ")" { return `kill(${k})` ; } 
 size = "size(" s:difInput ")" { return `size(${s})` ; } 
+
+wait = "wait(" t:primary ")" { return `wait(${t}*1000)` } // time in sec
