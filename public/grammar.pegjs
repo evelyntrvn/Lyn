@@ -26,16 +26,13 @@ ifStatement = "if" expr "then" sentence "else" sentence /
    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / audio / time / circle / rect /
+keyword "keyword" = difFct / reset / music / audio / time / circle / rect /
 					triangle / polygon / ellipse / line / floor /
-                    add / mult / subtract / divide / modulo / test /
-                    colorA / colorB / rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
+               colorA / colorB / rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
 time = "time" { return Date.getTime; }
-test = "test" { return "@test" }
-
 // Shapes and styles
 circle = "circle" { return "@circle"; }
 rect = "rect" _ x:primary _ y:primary _ w:primary _ h:primary { 
@@ -55,11 +52,7 @@ hex = h:[0-9A-Fa-f]*{ return `${h.join("")}` } //is there anyways to specify a c
 
 // Math
 floor = "floor" { return "floor"; }
-add = "+" { return "+"; }
-mult = "*" { return "*"; }
-subtract = "-" { return "-"; }
-divide = "/" { return "/"; }
-modulo = "%" { return "%"; }
+
 
 /****** Diffuse attributes ****/
 difFct = diffuse / rateA / rateB / feed / kill / size 
@@ -76,3 +69,9 @@ kill = "kill(" k:difInput ")" { return `kill(${k})` ; }
 size = "size(" s:difInput ")" { return `size(${s})` ; } 
 
 wait = "wait(" t:primary ")" { return `wait(${t}*1000)` } // time in sec
+reset = "reset" { return `reset()` }
+
+/***** music ****/
+music = playMusic / pauseMusic
+playMusic = "playMusic" { return `playMusic()` }
+pauseMusic = "pauseMusic" { return `pauseMusic()` } 

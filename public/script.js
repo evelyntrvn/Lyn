@@ -36,8 +36,10 @@ window.onload = function () {
             console.log(audio);
             //getAudioData(audio)
             mic = true;
-            audioElement.play();
 
+            if (playing){
+                audioElement.play();
+            }
 
             audioElement.addEventListener(
                 "ended",
@@ -50,10 +52,8 @@ window.onload = function () {
 
     const canvas = document.getElementById("gl");
     gl = canvas.getContext("webgl");
-    canvas.width = dimensions.width = window.innerWidth;
-    canvas.height = dimensions.height = window.innerHeight;
-    width = canvas.width,
-    height = canvas.height;
+    width = canvas.width = dimensions.width = window.innerWidth;
+    height = canvas.height = dimensions.height = window.innerHeight;
 
     // define drawing area of webgl canvas. bottom corner, width / height
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -64,10 +64,18 @@ window.onload = function () {
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value: "rateB(30)\n",
+        value: 
+`rateA(1)
+rateB(0.5)
+feed(0.0545)
+kill(0.062)
+size(3)
+diffuse(true)`,
         mode: "javascript",
         lineNumbers: true
     });
+
+    // TODO: the info container needs to refresh to be ontop
 
 // TODO: MAIN MQP PORTION
     cm.setOption("extraKeys", {
@@ -78,6 +86,9 @@ window.onload = function () {
             console.log(parsedCode);
             eval("(" + parsedCode + ")");
         },
+        "Shift-Enter": function (cm){
+            var code = cm.getValue();
+        }
     });
     /* run function, parse, then feed output to eval */
 };
@@ -104,6 +115,7 @@ function setInitialState() {
     f = 0.55;
     k = 0.062;
     s = 3;
+    
 
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
@@ -114,7 +126,8 @@ function setInitialState() {
     var x = width/2 - 100,
         y = height/2 - 200;
 
-    shape.rect(0, 0, 100, 200);
+    //shape.rect(0, 0, 100, 200);
+    shape.start()
 }
 
 function makeBuffer() {
@@ -263,8 +276,13 @@ function render() {
     window.requestAnimationFrame(render);
 
     gl.useProgram(simulationProgram);    // use our simulation shader
+    
 
     if (mic === true) {
+        if (playing){
+            audioElement.play();
+        }
+
         analyser.getByteFrequencyData(audio);
         let sum = 0;
         for (var i = 0; i < bufferLength; i++) {
@@ -324,42 +342,22 @@ function getK(c) {
 
 /**********SHAPE FUNCTIONS ********/
 
-/*
-Draw a rectangle based on given width, height, x coord, and y coord
-the (x,y) is the top left corner
-*/
-
-
-function circle( x, y, r ){
-    for (var i = 0; i < width; i++) {
-        for (var j = 0; j < height; j++) {
-            
-            var rad = Math.sqrt(Math.abs(i-x)^2 + Math.abs(j-y))
-            //console.log(rad)
-            if (rad <= r) {
-                poke(i, j, 0, 255, textureBack);
-            } else {
-                poke(i, j, 255, 0, textureBack);
-            }
-        }
-    }
-}
-
-// export var getDiff = ()=>{
-//     return String(diffuse)
-// }
-
-
 function wait(milliseconds){
-    //let milliseconds //= sec*1000
     const date = Date.now();
     let currentDate = null;
     do {
         currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
+    } while (currentDate - date < milliseconds){
+        if (diffuse){
+            render()
+        }
+    };
       
 }
 
+function reset(){
+    shape.start()
+}
 
 // Diffuse function
 export function setDiffuse(x){
@@ -392,6 +390,16 @@ export function feed(x){
 export function size(x){
     s = checkAudio(x)
     gl.uniform1f(uSize, s);
+}
+
+function playMusic(){
+    playing = true
+    audioElement.play()
+}
+
+function pauseMusic(){
+    playing = false
+    audioElement.pause()
 }
 
 export function checkAudio(x){

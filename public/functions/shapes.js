@@ -2,6 +2,19 @@
 
 import poking from "../script.js"
 
+export function start(){
+    for (var i = 0; i < window.innerWidth; i++) {
+        for (var j = 0; j < window.innerHeight; j++) {
+            if ( i%500 === 0 && j%500 === 0 ) {
+                poking(i, j, 0, 255);
+            } else {
+                poking(i, j, 255, 0);
+            }
+        }
+    }
+}
+
+
 /*
 Draw a rectangle based on given width, height, x coord, and y coord
 the (x,y) is the top left corner
