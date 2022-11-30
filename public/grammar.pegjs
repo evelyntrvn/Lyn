@@ -1,5 +1,5 @@
 start "start" = term +
-term "term" = body:(keyword / sentence) _ { return body; } // keyword to word
+term "term" = _? body:(keyword / sentence) _ { return body; } // keyword to word
 
 POINT = "." {return "point" }
 DIGIT = [0-9]
@@ -22,36 +22,35 @@ sentence = "{" expr:expr "}" { return expr.join("") } / regular
 _ "whitespace" = [ \t\n\r]*
 
 // conditional = cond:ifStatement / while / elseif  "(" condition ")" sentence { return cond; }
-ifStatement = "if" expr "then" sentence "else" sentence /
-   "if" expr "then" sentence  // conditional statement, what to return?
+// ifStatement = "if" expr "then" sentence "else" sentence /
+//    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / reset / music / audio / time / circle / rect /
-					triangle / polygon / ellipse / line / floor /
-               colorA / colorB / rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
+keyword "keyword" = difFct / reset / music / audio / time / rect /
+					     rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
 time = "time" { return Date.getTime; }
 // Shapes and styles
-circle = "circle" { return "@circle"; }
+//circle = "circle" { return "@circle"; }
 rect = "rect" _ x:primary _ y:primary _ w:primary _ h:primary { 
    var r = `shape.rect( ${x}, ${y}, ${w}, ${h} )`
    return r
    }
 
-triangle = "triangle" { return "@triangle"; }
-polygon = "polygon" { return "@polygon"; }
-ellipse = "ellipse" { return "@ellipse"; }
-line = "line" { return "@line"; }
+// triangle = "triangle" { return "@triangle"; }
+// polygon = "polygon" { return "@polygon"; }
+// ellipse = "ellipse" { return "@ellipse"; }
+// line = "line" { return "@line"; }
 
-bkgdColor = "bkgd" { return "@bkgd" }
-hexChar = [0-9A-Fa-f] {return hexChar; }
-hex = h:[0-9A-Fa-f]*{ return `${h.join("")}` } //is there anyways to specify a certain amount
+// bkgdColor = "bkgd" { return "@bkgd" }
+// hexChar = [0-9A-Fa-f] {return hexChar; }
+// hex = h:[0-9A-Fa-f]*{ return `${h.join("")}` } //is there anyways to specify a certain amount
 
 
 // Math
-floor = "floor" { return "floor"; }
+//floor = "floor" { return "floor"; }
 
 
 /****** Diffuse attributes ****/
@@ -59,8 +58,8 @@ difFct = diffuse / rateA / rateB / feed / kill / size
 difInput = primary / audio
 diffuse  = "diffuse(" bool:boolean ")"{ return `setDiffuse(${bool})`;}
 
-colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
-colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
+// colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
+// colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
 
 rateA = "rateA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
 rateB = "rateB(" r:difInput ")"{ return `rateB(${r})` ; } 

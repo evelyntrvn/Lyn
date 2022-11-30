@@ -65,11 +65,10 @@ window.onload = function () {
 
     const cm = CodeMirror(document.getElementById("editor"), {
         value: 
-`rateA(1)
+`feed(0.0367)
+kill(.0649)
+rateA(1)
 rateB(0.5)
-feed(0.0545)
-kill(0.062)
-size(3)
 diffuse(true)`,
         mode: "javascript",
         lineNumbers: true
@@ -110,9 +109,9 @@ var poking = function poking(x, y, r, g, b){
 }
 
 function setInitialState() {
-    dA = 1;
-    dB = 1.5;
-    f = 0.55;
+    dA = 1.0;
+    dB = 0.5;
+    f = 0.545;
     k = 0.062;
     s = 3;
     
@@ -126,8 +125,8 @@ function setInitialState() {
     var x = width/2 - 100,
         y = height/2 - 200;
 
-    //shape.rect(0, 0, 100, 200);
-    shape.start()
+    shape.rect(0, 0, 100, 200);
+    //shape.start()
 }
 
 function makeBuffer() {
@@ -330,6 +329,7 @@ function render() {
     gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
     gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
     gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
+
 }
 
 function map(value, min1, max1, min2, max2) {
