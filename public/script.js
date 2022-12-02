@@ -82,8 +82,6 @@ diffuse(false)`,
         lineNumbers: true
     });
 
-    // TODO: the info container needs to refresh to be ontop
-
     // TODO: MAIN MQP PORTION
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
@@ -97,7 +95,13 @@ diffuse(false)`,
             runSelected(cm)
         }
     });
-    /* run function, parse, then feed output to eval */
+
+    var helpIcon = document.getElementById('helpIcon')
+    helpIcon.addEventListener("click", (event)=>{
+        document.getElementsByClassName("containerPopup").style.zIndex = 5
+        document.getElementById('helpPopup').style.zIndex = 5
+    })
+
 };
 
 function poke(x, y, r, g, b, texture) {

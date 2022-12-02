@@ -5,7 +5,8 @@ body {
   }
 
 #infoContainer{
-    z-index: 2;
+    position: sticky;
+    z-index: 1;
     width: 100%;
     display: flex;
     flex-direction: row-reverse;
@@ -23,11 +24,37 @@ body {
     height: auto;
 }
 
+.containerPopup {
+    position: relative;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.658);
+    z-index: -1;
+}
+
+.popup {
+    width: 50%;
+    height: 50%;
+    background: #d2dde2;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    padding: 15px;
+    border-radius: 5px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 canvas{
     position: absolute;
-    top: 30;
+    top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 0;
 }
 
 #editor {
