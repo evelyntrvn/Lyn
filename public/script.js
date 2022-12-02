@@ -77,7 +77,11 @@ rateA(0.21)
 rateB(0.105)
 diffuse(true)
 
-diffuse(false)`,
+diffuse(false)
+
+playMusic
+pauseMusic
+rateB(audio)`,
         mode: "javascript",
         lineNumbers: true
     });
@@ -295,8 +299,10 @@ function render() {
         for (var i = 0; i < bufferLength; i++) {
             sum += audio[i];
         }
+
         audioData = sum / bufferLength;
-        //k = getK(audioData);
+        // console.log(audioData)
+
     }
 
     // update time on CPU and GPU
@@ -364,7 +370,7 @@ function wait(milliseconds) {
 }
 
 function reset() {
-    shape.start()
+    setInitialState();
 }
 
 // Diffuse function
@@ -376,23 +382,23 @@ export function setDiffuse(x) {
 }
 
 export function rateA(x) {
-    dA = checkAudio(x)
+    dA = checkAudio(x, 0, 1)
     gl.uniform1f(uDA, dA);
 }
 
 export function rateB(x) {
-    dB = checkAudio(x)
+    dB = checkAudio(x, 0, 1)
     gl.uniform1f(uDB, dB);
 }
 
 export function kill(x) {
-    k = checkAudio(x)
+    k = checkAudio(x, 0, 0.1)
     gl.uniform1f(uKill, k);
     console.log(k)
 }
 
 export function feed(x) {
-    f = checkAudio(x)
+    f = checkAudio(x, 0, 0.1)
     gl.uniform1f(uFeed, f);
 }
 
@@ -411,10 +417,12 @@ function pauseMusic() {
     audioElement.pause()
 }
 
-export function checkAudio(x) {
+export function checkAudio(x, min, max) {
     //console.log(x)
     if (x === "audio") {
-        //console.log("setting audio")
+        console.log(audioData)
+        audioData = map(audioData, 0, 150, min, max)
+
         return audioData;
     } else {
         //console.log("no audio")
