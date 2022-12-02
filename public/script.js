@@ -37,7 +37,7 @@ window.onload = function () {
             //getAudioData(audio)
             mic = true;
 
-            if (playing){
+            if (playing) {
                 audioElement.play();
             }
 
@@ -64,29 +64,37 @@ window.onload = function () {
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value: 
+        value:
 `feed(0.029)
 kill(0.057)
 rateA(1)
 rateB(0.2)
-diffuse(true)`,
+diffuse(true)
+
+feed(0.015)
+kill(0.049)
+rateA(0.21)
+rateB(0.105)
+diffuse(true)
+
+diffuse(false)`,
         mode: "javascript",
         lineNumbers: true
     });
 
     // TODO: the info container needs to refresh to be ontop
 
-// TODO: MAIN MQP PORTION
+    // TODO: MAIN MQP PORTION
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
             var code = cm.getValue();
-            console.log(code)
+            //console.log(code)
             var parsedCode = parser.parse(code)
-            console.log(parsedCode);
+            //console.log(parsedCode);
             eval("(" + parsedCode + ")");
         },
-        "Shift-Enter": function (cm){
-            var code = cm.getValue();
+        "Shift-Enter": function (cm) {
+            runSelected(cm)
         }
     });
     /* run function, parse, then feed output to eval */
@@ -100,11 +108,11 @@ function poke(x, y, r, g, b, texture) {
         x, y, 1, 1,
         gl.RGBA, gl.UNSIGNED_BYTE,
         // is supposed to be a typed array
-        new Uint8Array([r, g, b, 255])  
+        new Uint8Array([r, g, b, 255])
     );
 }
 
-var poking = function poking(x, y, r, g, b){
+var poking = function poking(x, y, r, g, b) {
     poke(x, y, r, g, b, textureBack)
 }
 
@@ -114,15 +122,15 @@ function setInitialState() {
     f = 0.055;
     k = 0.062;
     s = 3;
-    
+
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
     gl.uniform1f(uFeed, f);
     gl.uniform1f(uKill, k);
     gl.uniform1f(uSize, s);
 
-    var x = width/2 - 100,
-        y = height/2 - 200;
+    var x = width / 2 - 100,
+        y = height / 2 - 200;
 
     shape.rect(x, y, 100, 100);
     //shape.start()
@@ -207,7 +215,7 @@ function makeShaders() {
     uSize = gl.getUniformLocation(simulationProgram, "size");
     uDiffuse = gl.getUniformLocation(simulationProgram, "diffuse");
     uAudio = gl.getUniformLocation(simulationProgram, "audioData");
-    uSimulationState = gl.getUniformLocation( simulationProgram, 'state' );
+    uSimulationState = gl.getUniformLocation(simulationProgram, 'state');
     position = gl.getAttribLocation(simulationProgram, "a_position");
     gl.enableVertexAttribArray(simulationProgram);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
@@ -271,10 +279,10 @@ function render() {
     window.requestAnimationFrame(render);
 
     gl.useProgram(simulationProgram);    // use our simulation shader
-    
+
 
     if (mic === true) {
-        if (playing){
+        if (playing) {
             audioElement.play();
         }
 
@@ -299,7 +307,7 @@ function render() {
     gl.uniform1f(uAudio, audioData);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    
+
     gl.framebufferTexture2D(    // use the framebuffer to write to our texFront texture
         gl.FRAMEBUFFER,
         gl.COLOR_ATTACHMENT0,
@@ -313,7 +321,7 @@ function render() {
     gl.activeTexture(gl.TEXTURE0);                              // in our shaders, read from texBack, which is where we poked to
     gl.bindTexture(gl.TEXTURE_2D, textureBack);
     gl.uniform1i(uSimulationState, 0);
-    
+
     gl.drawArrays(gl.TRIANGLES, 0, 6);                         // run shader
 
     let tmp = textureFront;                                    // swap our front and back textures
@@ -338,76 +346,106 @@ function getK(c) {
 
 /**********SHAPE FUNCTIONS ********/
 
-function wait(milliseconds){
+function wait(milliseconds) {
     const date = Date.now();
     let currentDate = null;
     do {
         currentDate = Date.now();
-    } while (currentDate - date < milliseconds){
-        if (diffuse){
+    } while (currentDate - date < milliseconds) {
+        if (diffuse) {
             render()
         }
     };
-      
+
 }
 
-function reset(){
+function reset() {
     shape.start()
 }
 
 // Diffuse function
-export function setDiffuse(x){
-    
+export function setDiffuse(x) {
+
     diffuse = x
-    gl.uniform1f(uDiffuse, diffuse); 
+    gl.uniform1f(uDiffuse, diffuse);
     console.log(diffuse)
 }
 
-export function rateA(x){
+export function rateA(x) {
     dA = checkAudio(x)
     gl.uniform1f(uDA, dA);
 }
 
-export function rateB(x){
+export function rateB(x) {
     dB = checkAudio(x)
     gl.uniform1f(uDB, dB);
 }
 
-export function kill(x){
+export function kill(x) {
     k = checkAudio(x)
     gl.uniform1f(uKill, k);
     console.log(k)
 }
 
-export function feed(x){
+export function feed(x) {
     f = checkAudio(x)
     gl.uniform1f(uFeed, f);
 }
 
-export function size(x){
+export function size(x) {
     s = checkAudio(x)
     gl.uniform1f(uSize, s);
 }
 
-function playMusic(){
+function playMusic() {
     playing = true
     audioElement.play()
 }
 
-function pauseMusic(){
+function pauseMusic() {
     playing = false
     audioElement.pause()
 }
 
-export function checkAudio(x){
+export function checkAudio(x) {
     //console.log(x)
-    if(x ==="audio"){
+    if (x === "audio") {
         //console.log("setting audio")
         return audioData;
-    }else {
+    } else {
         //console.log("no audio")
         return x
     }
 }
 
 export default poking
+
+
+// running code via different keyboard shortcuts
+
+function runSelected(cm) {
+    let pos = cm.getCursor(),
+        text = null
+
+    text = cm.getDoc().getSelection()
+
+    //check if no selection; use line
+    if (text === "") {
+        text = cm.getLine(pos.line)
+    } else {
+        pos = { start: cm.getCursor('start'), end: cm.getCursor('end') }
+    }
+
+    if (pos.start === undefined) {
+        let lineNumber = pos.line,
+            start = 0,
+            end = text.length
+
+        pos = { start: { line: lineNumber, ch: start }, end: { line: lineNumber, ch: end } }
+    }
+
+    console.log(text)
+    var parsedCode = parser.parse(text)
+    console.log(parsedCode);
+    eval("(" + parsedCode + ")");
+}
