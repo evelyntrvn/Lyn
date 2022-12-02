@@ -65,10 +65,10 @@ window.onload = function () {
 
     const cm = CodeMirror(document.getElementById("editor"), {
         value: 
-`feed(0.0367)
-kill(.0649)
-rateA(1)
-rateB(0.5)
+`feed(0.015)
+kill(0.049)
+rateA(0.21)
+rateB(0.105)
 diffuse(true)`,
         mode: "javascript",
         lineNumbers: true
@@ -111,11 +111,10 @@ var poking = function poking(x, y, r, g, b){
 function setInitialState() {
     dA = 1.0;
     dB = 0.5;
-    f = 0.545;
+    f = 0.055;
     k = 0.062;
     s = 3;
     
-
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
     gl.uniform1f(uFeed, f);
@@ -125,7 +124,7 @@ function setInitialState() {
     var x = width/2 - 100,
         y = height/2 - 200;
 
-    shape.rect(0, 0, 100, 200);
+    shape.rect(x, y, 100, 100);
     //shape.start()
 }
 
@@ -207,11 +206,8 @@ function makeShaders() {
     uKill = gl.getUniformLocation(simulationProgram, "kill");
     uSize = gl.getUniformLocation(simulationProgram, "size");
     uDiffuse = gl.getUniformLocation(simulationProgram, "diffuse");
-
     uAudio = gl.getUniformLocation(simulationProgram, "audioData");
-
     uSimulationState = gl.getUniformLocation( simulationProgram, 'state' );
-
     position = gl.getAttribLocation(simulationProgram, "a_position");
     gl.enableVertexAttribArray(simulationProgram);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
@@ -288,7 +284,7 @@ function render() {
             sum += audio[i];
         }
         audioData = sum / bufferLength;
-        k = getK(audioData);
+        //k = getK(audioData);
     }
 
     // update time on CPU and GPU
@@ -380,6 +376,7 @@ export function rateB(x){
 export function kill(x){
     k = checkAudio(x)
     gl.uniform1f(uKill, k);
+    console.log(k)
 }
 
 export function feed(x){
@@ -403,12 +400,12 @@ function pauseMusic(){
 }
 
 export function checkAudio(x){
-    console.log(x)
+    //console.log(x)
     if(x ==="audio"){
-        console.log("setting audio")
+        //console.log("setting audio")
         return audioData;
     }else {
-        console.log("no audio")
+        //console.log("no audio")
         return x
     }
 }

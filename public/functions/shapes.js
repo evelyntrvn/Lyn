@@ -23,12 +23,10 @@ export function rect( x, y, w, h ){    // TODO: Fix coordinates
     for (var i = 0; i < window.innerWidth; i++) {
         for (var j = 0; j < window.innerHeight; j++) {
             if (
-                (i >= x && i <= x + 20 ||
-                i <= x + w && i >= x + w - 20) &&
-                (j >= y && j <= y + 20 ||
-                j <= h && j >= h -20)
+                i >= x && i <= x + w && 
+                j <= y + h && j >= y 
             ) {
-                poking(i, j, 0, 0, 255);
+                poking(i, j, 0, 255, 0 );
             } else {
                 poking(i, j, 255, 0, 0);
             }
