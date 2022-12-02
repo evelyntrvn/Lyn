@@ -85,8 +85,8 @@
 
     float reaction = a*b*b;
 
-    float a2 = a + (dA * lp.x *2. - reaction + feed * (1. - a));
-    float b2 = b + (dB * lp.y *2. + reaction - (kill + feed) * b);
+    float a2 = a + (dA * lp.x - reaction + feed * (1. - a));
+    float b2 = b + (dB * lp.y + reaction - (kill + feed) * b);
 
     vec4 result = vec4(a2, b2, 0., 1.);
     return result;

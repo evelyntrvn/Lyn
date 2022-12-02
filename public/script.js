@@ -65,10 +65,10 @@ window.onload = function () {
 
     const cm = CodeMirror(document.getElementById("editor"), {
         value: 
-`feed(0.015)
-kill(0.049)
-rateA(0.21)
-rateB(0.105)
+`feed(0.029)
+kill(0.057)
+rateA(1)
+rateB(0.2)
 diffuse(true)`,
         mode: "javascript",
         lineNumbers: true
