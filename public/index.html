@@ -3,7 +3,9 @@
 <body>
   <div id="infoContainer">
     <div class="iconContainer">
+      <img id="shuffleIcon" class="icon" src="./img/shuffle.png">
       <img id="helpIcon" class="icon" src="./img/help.png">
+      
     </div>
   </div>
 
@@ -128,9 +130,30 @@
 
   uniform sampler2D uSampler;
   uniform vec2 resolution;
+  //uniform 
+
+  vec4 grayscale(){
+    vec4 cur = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+    float gray = (cur.r*0.21 + cur.g*0.71 + cur.b*0.07);
+    float colorFactor = 1.;
+
+    return vec4(cur.rgb * (1. - colorFactor) + gray * colorFactor, cur.a);
+  }
+
+  vec4 colorscale(vec3 colA, vec3 colB){
+    vec4 cur = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+    vec3 a = colA * cur.r;
+    vec3 b = colB * cur.g;
+
+    return vec4( a + b, cur.a );
+  }
 
   void main() {
-    gl_FragColor = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+    vec3 colA = vec3(0.16, 0.68, 0.48);
+    vec3 colB = vec3(0., 0.81, 0.82);
+
+    
+    gl_FragColor = colorscale(colA, colB); //grayscale()
   }
 </script>
 

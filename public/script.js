@@ -13,6 +13,15 @@ let gl, framebuffer, simulationProgram, drawProgram,
     mic = false,
     width, height;
 
+let presets = [
+    {dA: 1, dB: 0.2, f: 0.029, k: 0.057},
+    {dA: 0.21, dB: 0.105, f: 0.022, k: 0.049},
+    {dA: 0.21, dB: 0.13, f: 0.041, k: 0.059},
+    {dA: 0.21, dB: 0.105, f: 0.015, k: 0.049}, // fix this preset
+    {dA: 0.21, dB: 0.105, f: 0.049, k: 0.061}
+],
+    prevShuffle = -1;
+
 window.onload = function () {
     navigator.mediaDevices
         .getUserMedia({ audio: true, video: false })
@@ -44,7 +53,6 @@ window.onload = function () {
             audioElement.addEventListener(
                 "ended",
                 () => {
-                    playButton.dataset.playing = "false";
                 },
                 false
             );
@@ -101,9 +109,25 @@ rateB(audio)`,
     });
 
     var helpIcon = document.getElementById('helpIcon')
-    helpIcon.addEventListener("click", (event)=>{
-        document.getElementsByClassName("containerPopup").style.zIndex = 5
-        document.getElementById('helpPopup').style.zIndex = 5
+    helpIcon.addEventListener("click", (e)=>{
+        document.getElementById('helpPopup').style.zIndex = "5"
+        console.log('click')
+    })
+
+    var shuffleIcon = document.getElementById('shuffleIcon')
+    shuffleIcon.addEventListener("click", (e)=>{
+        let i = Math.floor(Math.random() * (presets.length - 1));
+        while(i===prevShuffle){
+            i = Math.floor(Math.random() * (presets.length - 1));
+        }
+        console.log(i)
+
+        dA = presets[i].dA
+        dB = presets[i].dB
+        f = presets[i].f
+        k = presets[i].k
+
+        prevShuffle = i
     })
 
 };
@@ -185,7 +209,9 @@ function makeShaders() {
     gl.useProgram(drawProgram)
 
     uRes = gl.getUniformLocation(drawProgram, 'resolution')
+
     gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight)
+    
 
     // get position attribute location in shader
     let position = gl.getAttribLocation(drawProgram, 'a_position')
@@ -305,8 +331,8 @@ function render() {
 
     }
 
-    // update time on CPU and GPU
     time++;
+
     gl.uniform1f(uTime, time);
     gl.uniform1f(uDA, dA);
     gl.uniform1f(uDB, dB);
