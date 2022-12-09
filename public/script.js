@@ -1,26 +1,28 @@
 import * as parser from "./grammar.js";
 // import {checkAudio, setDiffuse, rateA, rateB, kill, feed, size} from "./functions/diffuse.js"
 import * as shape from "./functions/shapes.js"
+import * as style from "./functions/styles.js"
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
-    uFeed, uKill, uSize, uDiffuse,
+    uFeed, uKill, uSize, uDiffuse, uColA, uColB,
     textureBack, textureFront,
     dimensions = { width: null, height: null },
     dA, dB, f, k, s, diffuse = false,
+    colA = style.color("#81559B"), colB = style.color("#DDF8E8"),
     audio, audioData, bufferLength, analyser, audioContext, audioElement,
     playing = false,
     mic = false,
     width, height;
 
-let presets = [
+const presets = [
     {dA: 1, dB: 0.2, f: 0.029, k: 0.057},
     {dA: 0.21, dB: 0.105, f: 0.022, k: 0.049},
     {dA: 0.21, dB: 0.13, f: 0.041, k: 0.059},
-    {dA: 0.21, dB: 0.105, f: 0.015, k: 0.049}, // fix this preset
+    {dA: 0.21, dB: 0.105, f: 0.015, k: 0.049}, 
     {dA: 0.21, dB: 0.105, f: 0.049, k: 0.061}
-],
-    prevShuffle = -1;
+]
+let prevShuffle = -1;
 
 window.onload = function () {
     navigator.mediaDevices
@@ -100,7 +102,7 @@ rateB(audio)`,
             var code = cm.getValue();
             //console.log(code)
             var parsedCode = parser.parse(code)
-            //console.log(parsedCode);
+            console.log(parsedCode);
             eval("(" + parsedCode + ")");
         },
         "Shift-Enter": function (cm) {
@@ -209,8 +211,13 @@ function makeShaders() {
     gl.useProgram(drawProgram)
 
     uRes = gl.getUniformLocation(drawProgram, 'resolution')
+    uColA = gl.getUniformLocation(drawProgram, 'colA')
+    uColB = gl.getUniformLocation(drawProgram, 'colB')
 
     gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight)
+    gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+    gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
+
     
 
     // get position attribute location in shader
@@ -378,6 +385,16 @@ function map(value, min1, max1, min2, max2) {
 
 function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
+}
+
+function colorA(hex){
+    colA = style.color(hex)
+    gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+}
+
+function colorB(hex){
+    colB = style.color(hex)
+    gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 }
 
 /**********SHAPE FUNCTIONS ********/

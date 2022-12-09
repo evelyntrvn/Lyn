@@ -27,7 +27,8 @@ _ "whitespace" = [ \t\n\r]*
 
 /****** Key Words ******/
 keyword "keyword" = difFct / reset / music / audio / time / rect /
-					     rateA / rateB / feed / kill / wait / primary / $[^{} \t\n\r] +
+					     rateA / rateB / feed / kill / wait / primary /
+                    hex / col / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
@@ -45,8 +46,8 @@ rect = "rect" _ x:primary _ y:primary _ w:primary _ h:primary {
 // line = "line" { return "@line"; }
 
 // bkgdColor = "bkgd" { return "@bkgd" }
-// hexChar = [0-9A-Fa-f] {return hexChar; }
-// hex = h:[0-9A-Fa-f]*{ return `${h.join("")}` } //is there anyways to specify a certain amount
+hexChar = h:[0-9A-Fa-f] { return `${h}`; }
+hex =  "#" h:(hexChar hexChar hexChar hexChar hexChar hexChar) { return `"#${h.join("")}"` } 
 
 
 // Math
@@ -57,9 +58,6 @@ rect = "rect" _ x:primary _ y:primary _ w:primary _ h:primary {
 difFct = diffuse / rateA / rateB / feed / kill / size 
 difInput = primary / audio
 diffuse  = "diffuse(" bool:boolean ")"{ return `setDiffuse(${bool})`;}
-
-// colorA = "colorA(" h:hex ")"{ return `@colorA(${h})` ; } // change to be an equals sign
-// colorB = "colorB(" h:hex ")"{ return `@colorB(${h})` ; }
 
 rateA = "rateA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
 rateB = "rateB(" r:difInput ")"{ return `rateB(${r})` ; } 
@@ -74,3 +72,8 @@ reset = "reset" { return `reset()` }
 music = playMusic / pauseMusic
 playMusic = "playMusic" { return `playMusic()` }
 pauseMusic = "pauseMusic" { return `pauseMusic()` } 
+
+/** colors **/
+col = colorA /colorB
+colorA = "colorA(" h:hex ")"{ return `colorA(${h})` ; } // change to be an equals sign
+colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
