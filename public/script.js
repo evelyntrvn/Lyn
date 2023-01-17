@@ -1,8 +1,8 @@
 import * as parser from "./grammar.js";
-// import {checkAudio, setDiffuse, rateA, rateB, kill, feed, size} from "./functions/diffuse.js"
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
 import * as graph from "./paramContainer.js"
+import * as MP from "postpre"
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -502,10 +502,14 @@ export function feed(x) {
     gl.uniform1f(uFeed, uVar.f[0]);
 }
 
-// export function size(x) {
-//     s = checkAudio(x)
-//     gl.uniform1f(uSize, s);
-// }
+// Post-processing
+function kal(){
+    const merger = new MP.Merger([( ka = P.kaleidoscope() )], canvas, gl, {
+        channels: channels,
+    });
+}
+
+// Audio Functions
 
 function playMusic() {
     playing = true
