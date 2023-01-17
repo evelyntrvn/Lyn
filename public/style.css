@@ -74,3 +74,21 @@ canvas{
     color: rgb(255, 255, 255);
     background-color: #282828a4;
 }
+
+.CodeMirror-highlight {
+    background:var(--b_low)
+  }
+
+#paramContainer{
+    background-color: rgba(0, 0, 0, 0.41);
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+    width: 16%;
+    height: auto;
+    padding: 1em; 
+    font-size: 0.75rem;
+    font-family: 'Courier New', Courier, monospace;
+}

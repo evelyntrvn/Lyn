@@ -20,17 +20,16 @@
 
   <div id="editor"></div>
   <canvas id="gl"></canvas>
-  <audio src="audio\santa_baby.mp3"></audio>
+  <audio src="audio\tokyo_tea.mp3"></audio>
+  <div id="paramContainer">
+    <div id="textParams"></div>
+    <div id="graphParams"></div>
+  </div>
 </body>
 
 
-
-
-
-
-<!-- <input type="file" src="/grammar.txt" id="grammar"> -->
-
 <script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
 <link
   rel="stylesheet"
   href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"
@@ -150,7 +149,6 @@
   }
 
   void main() {
-    
     gl_FragColor = colorscale(colA, colB); //grayscale();
   }
 </script>

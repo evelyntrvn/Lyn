@@ -2,25 +2,32 @@ import * as parser from "./grammar.js";
 // import {checkAudio, setDiffuse, rateA, rateB, kill, feed, size} from "./functions/diffuse.js"
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
+import * as graph from "./paramContainer.js"
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
     uFeed, uKill, uSize, uDiffuse, uColA, uColB,
     textureBack, textureFront,
     dimensions = { width: null, height: null },
-    dA, dB, f, k, s, diffuse = false,
-    colA = style.color("#81559B"), colB = style.color("#DDF8E8"),
+    diffuse = false,
+    colA = style.color("#e6c457"), colB = style.color("#9257e6"),
     audio, audioData, bufferLength, analyser, audioContext, audioElement,
+    uVar = {
+        dA: [1.0, false, 0, 1],
+        dB: [0.5, false, 0, 1],
+        f: [0.055, false, 0, 0.1],
+        k: [0.062, false, 0, 0.1]
+    }, // [value, ifAudio, min, max]
     playing = false,
     mic = false,
     width, height;
 
 const presets = [
-    {dA: 1, dB: 0.2, f: 0.029, k: 0.057},
-    {dA: 0.21, dB: 0.105, f: 0.022, k: 0.049},
-    {dA: 0.21, dB: 0.13, f: 0.041, k: 0.059},
-    {dA: 0.21, dB: 0.105, f: 0.015, k: 0.049}, 
-    {dA: 0.21, dB: 0.105, f: 0.049, k: 0.061}
+    { dA: 1, dB: 0.2, f: 0.029, k: 0.057 },
+    { dA: 0.21, dB: 0.105, f: 0.022, k: 0.049 },
+    { dA: 0.21, dB: 0.13, f: 0.041, k: 0.059 },
+    { dA: 0.21, dB: 0.105, f: 0.015, k: 0.049 },
+    { dA: 0.21, dB: 0.105, f: 0.049, k: 0.061 }
 ]
 let prevShuffle = -1;
 
@@ -28,6 +35,7 @@ window.onload = function () {
     navigator.mediaDevices
         .getUserMedia({ audio: true, video: false })
         .then(function (stream) {
+
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             audioElement = document.querySelector("audio");
             //const track = audioContext.createMediaStreamSource(stream);
@@ -45,8 +53,8 @@ window.onload = function () {
 
             analyser.getByteFrequencyData(audio);
             console.log(audio);
-            //getAudioData(audio)
             mic = true;
+            // getAudioData(audio);
 
             if (playing) {
                 audioElement.play();
@@ -54,8 +62,7 @@ window.onload = function () {
 
             audioElement.addEventListener(
                 "ended",
-                () => {
-                },
+                () => {},
                 false
             );
         });
@@ -75,7 +82,7 @@ window.onload = function () {
 
     const cm = CodeMirror(document.getElementById("editor"), {
         value:
-`feed(0.029)
+            `feed(0.029)
 kill(0.057)
 rateA(1)
 rateB(0.2)
@@ -96,11 +103,9 @@ rateB(audio)`,
         lineNumbers: true
     });
 
-    // TODO: MAIN MQP PORTION
     cm.setOption("extraKeys", {
         "Ctrl-Enter": function (cm) {
             var code = cm.getValue();
-            //console.log(code)
             var parsedCode = parser.parse(code)
             console.log(parsedCode);
             eval("(" + parsedCode + ")");
@@ -111,28 +116,48 @@ rateB(audio)`,
     });
 
     var helpIcon = document.getElementById('helpIcon')
-    helpIcon.addEventListener("click", (e)=>{
+    helpIcon.addEventListener("click", (e) => {
         document.getElementById('helpPopup').style.zIndex = "5"
         console.log('click')
     })
 
     var shuffleIcon = document.getElementById('shuffleIcon')
-    shuffleIcon.addEventListener("click", (e)=>{
+    shuffleIcon.addEventListener("click", (e) => {
         let i = Math.floor(Math.random() * (presets.length - 1));
-        while(i===prevShuffle){
+        while (i === prevShuffle) {
             i = Math.floor(Math.random() * (presets.length - 1));
         }
         console.log(i)
 
-        dA = presets[i].dA
-        dB = presets[i].dB
-        f = presets[i].f
-        k = presets[i].k
+        uVar.dA[0] = presets[i].dA
+        uVar.dB[0] = presets[i].dB
+        uVar.f[0] = presets[i].f
+        uVar.k[0] = presets[i].k
+
+        uVar.dA[1] = false
+        uVar.dB[1] = false
+        uVar.f[1] = false
+        uVar.k[1] = false
 
         prevShuffle = i
     })
 
+    paramInfo();
+    
 };
+
+// CHANGE TO CHECK WHICH PARAMS ARE IN USE, newline
+function paramInfo(){
+    var printParams = document.getElementById('textParams')
+    while (printParams.firstChild){
+        printParams.removeChild(printParams.firstChild)
+    }
+    for (let v in uVar){
+        let varInfo = document.createElement('p')
+        varInfo.textContent = v + ": " + uVar[v][0] + "\n"
+        printParams.append(varInfo)
+    }
+}
 
 function poke(x, y, r, g, b, texture) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -151,17 +176,10 @@ var poking = function poking(x, y, r, g, b) {
 }
 
 function setInitialState() {
-    dA = 1.0;
-    dB = 0.5;
-    f = 0.055;
-    k = 0.062;
-    s = 3;
-
-    gl.uniform1f(uDA, dA);
-    gl.uniform1f(uDB, dB);
-    gl.uniform1f(uFeed, f);
-    gl.uniform1f(uKill, k);
-    gl.uniform1f(uSize, s);
+    gl.uniform1f(uDA, uVar.dA[0]);
+    gl.uniform1f(uDB, uVar.dB[0]);
+    gl.uniform1f(uFeed, uVar.f[0]);
+    gl.uniform1f(uKill, uVar.k[0]);
 
     var x = width / 2 - 100,
         y = height / 2 - 200;
@@ -218,7 +236,7 @@ function makeShaders() {
     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 
-    
+
 
     // get position attribute location in shader
     let position = gl.getAttribLocation(drawProgram, 'a_position')
@@ -260,6 +278,7 @@ function makeShaders() {
     position = gl.getAttribLocation(simulationProgram, "a_position");
     gl.enableVertexAttribArray(simulationProgram);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
 }
 
 function makeTextures() {
@@ -318,11 +337,9 @@ function makeTextures() {
 let time = 0;
 function render() {
     window.requestAnimationFrame(render);
-
     gl.useProgram(simulationProgram);    // use our simulation shader
-
-
     if (mic === true) {
+
         if (playing) {
             audioElement.play();
         }
@@ -331,23 +348,35 @@ function render() {
         let sum = 0;
         for (var i = 0; i < bufferLength; i++) {
             sum += audio[i];
+
         }
-
         audioData = sum / bufferLength;
-        // console.log(audioData)
 
+        for (let v in uVar) {
+            if (uVar[v][1] === true) {
+                let min = uVar[v][2],
+                    max = uVar[v][3]
+                audioData = map(audioData, 0, 200, min, max) 
+                uVar[v][0] = audioData
+                //console.log(v + ": " + uVar[v][0])
+            }
+        }
     }
 
     time++;
 
     gl.uniform1f(uTime, time);
-    gl.uniform1f(uDA, dA);
-    gl.uniform1f(uDB, dB);
-    gl.uniform1f(uFeed, f);
-    gl.uniform1f(uKill, k);
-    gl.uniform1f(uSize, s);
+    gl.uniform1f(uDA, uVar.dA[0]);
+    gl.uniform1f(uDB, uVar.dB[0]);
+    gl.uniform1f(uFeed, uVar.f[0]);
+    gl.uniform1f(uKill, uVar.k[0]);
     gl.uniform1f(uDiffuse, diffuse);
     gl.uniform1f(uAudio, audioData);
+
+    paramInfo(); //update param text
+    if (time%100 === 0){
+        graph.update(uVar, time);
+    }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
@@ -376,7 +405,6 @@ function render() {
     gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
     gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
     gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
-
 }
 
 function map(value, min1, max1, min2, max2) {
@@ -387,12 +415,12 @@ function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
 
-function colorA(hex){
+function colorA(hex) {
     colA = style.color(hex)
     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
 }
 
-function colorB(hex){
+function colorB(hex) {
     colB = style.color(hex)
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 }
@@ -400,15 +428,7 @@ function colorB(hex){
 /**********SHAPE FUNCTIONS ********/
 
 function wait(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-        currentDate = Date.now();
-    } while (currentDate - date < milliseconds) {
-        if (diffuse) {
-            render()
-        }
-    };
+    
 
 }
 
@@ -425,30 +445,67 @@ export function setDiffuse(x) {
 }
 
 export function rateA(x) {
-    dA = checkAudio(x, 0, 1)
-    gl.uniform1f(uDA, dA);
+    if (x === "audio") {
+        uVar.dA[1] = true;
+        let min = uVar.dA[2],
+            max = uVar.dA[3]
+        audioData = map(audioData, 0, 150, min, max)
+        uVar.dA[0] = audioData;
+    } else {
+        uVar.dA[1] = false;
+        uVar.dA[0] = x
+    }
+    gl.uniform1f(uDA, uVar.dA[0]);
 }
 
 export function rateB(x) {
-    dB = checkAudio(x, 0, 1)
-    gl.uniform1f(uDB, dB);
+    if (x === "audio") {
+        uVar.dB[1] = true;
+        let min = uVar.dB[2],
+            max = uVar.dB[3]
+
+        audioData = map(audioData, 0, 150, min, max)
+        uVar.dB[0] = audioData;
+    } else {
+        uVar.dB[1] = false;
+        uVar.dB[0] = x
+    }
+    gl.uniform1f(uDB, uVar.dB[0]);
 }
 
 export function kill(x) {
-    k = checkAudio(x, 0, 0.1)
-    gl.uniform1f(uKill, k);
-    console.log(k)
+    if (x === "audio") {
+        uVar.k[1] = true;
+        let min = uVar.k[2],
+            max = uVar.k[3]
+        audioData = map(audioData, 0, 150, min, max)
+        uVar.k[0] = audioData;
+    } else {
+        uVar.k[1] = false;
+        uVar.k[0] = x
+    }
+    gl.uniform1f(uKill, uVar.k[0]);
 }
 
 export function feed(x) {
-    f = checkAudio(x, 0, 0.1)
-    gl.uniform1f(uFeed, f);
+    if (x === "audio") {
+        console.log("audio")
+        uVar.f[1] = true;
+        let min = uVar.f[2],
+            max = uVar.f[3]
+        audioData = map(audioData, 0, 150, min, max)
+        uVar.f[0] = audioData;
+    } else {
+        uVar.f[1] = false;
+        uVar.f[0] = x
+    }
+    gl.uniform1f(uFeed, uVar.f[0]);
 }
 
-export function size(x) {
-    s = checkAudio(x)
-    gl.uniform1f(uSize, s);
-}
+// export function size(x) {
+//     s = checkAudio(x)
+//     gl.uniform1f(uSize, s);
+// }
 
 function playMusic() {
     playing = true
@@ -460,18 +517,19 @@ function pauseMusic() {
     audioElement.pause()
 }
 
-export function checkAudio(x, min, max) {
-    //console.log(x)
-    if (x === "audio") {
-        console.log(audioData)
-        audioData = map(audioData, 0, 150, min, max)
+// export function checkAudio(x, min, max) {
+//     //console.log(x)
+//     if (x === "audio") {
+//         console.log(audioData)
 
-        return audioData;
-    } else {
-        //console.log("no audio")
-        return x
-    }
-}
+//         audioData = map(audioData, 0, 150, min, max)
+
+//         return audioData;
+//     } else {
+//         //console.log("no audio")
+//         return x
+//     }
+// }
 
 export default poking
 
@@ -502,5 +560,24 @@ function runSelected(cm) {
     console.log(text)
     var parsedCode = parser.parse(text)
     console.log(parsedCode);
+    flash(cm, pos)
     eval("(" + parsedCode + ")");
+}
+
+// TODO: fix
+function flash(cm, pos) {
+    let sel,
+        cb = function () { sel.clear() }
+    if (pos !== null) {
+        if (pos.start) {
+            sel = cm.markText(pos.start, pos.end, { className: "CodeMirror-highlight" });
+        } else { // called with single line
+            sel = cm.markText({ line: pos.line, ch: 0 }, { line: pos.line, ch: null }, { className: "CodeMirror-highlight" })
+        }
+    } else {
+        self = cm.markText(cm.getCursor(true, cm.getCursor(false, { className: "CodeMirror-highlight" })))
+
+        window.setTimeout(cb, 250)
+    }
+    console.log("highlighted")
 }
