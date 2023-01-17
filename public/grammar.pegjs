@@ -28,7 +28,7 @@ _ "whitespace" = [ \t\n\r]*
 /****** Key Words ******/
 keyword "keyword" = difFct / reset / music / audio / time / rect /
 					     rateA / rateB / feed / kill / wait / primary /
-                    hex / col / $[^{} \t\n\r] +
+                    hex / col / effects / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
@@ -77,3 +77,7 @@ pauseMusic = "pauseMusic" { return `pauseMusic()` }
 col = colorA /colorB
 colorA = "colorA(" h:hex ")"{ return `colorA(${h})` ; } // change to be an equals sign
 colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
+
+/** Post Processing **/
+effects = kal
+kal = "kal"{ return `kal()`;}
