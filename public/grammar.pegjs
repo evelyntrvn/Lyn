@@ -26,7 +26,7 @@ _ "whitespace" = [ \t\n\r]*
 //    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / reset / music / audio / time / rect /
+keyword "keyword" = difFct / cellFct / reset / music / audio / time / rect /
 					     rateA / rateB / feed / kill / wait / primary /
                     hex / col / effects / $[^{} \t\n\r] +
 
@@ -67,6 +67,11 @@ size = "size(" s:difInput ")" { return `size(${s})` ; }
 
 wait = "wait(" t:primary ")" { return `wait(${t}*1000)` } // time in sec
 reset = "reset" { return `reset()` }
+
+/****** Cellular Automata attributes ****/
+cellFct = automata
+
+automata  = "automata(" bool:boolean ")"{ return `setAutomata(${bool})`;}
 
 /***** music ****/
 music = playMusic / pauseMusic

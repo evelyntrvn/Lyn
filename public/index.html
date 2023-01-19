@@ -3,12 +3,12 @@
 <body>
   <div id="infoContainer">
     <div class="iconContainer">
-      <img id="shuffleIcon" class="icon" src="./img/shuffle.png">
-      <img id="helpIcon" class="icon" src="./img/help.png">
-      
+      <img id="shuffleIcon" class="icon" src="./img/shuffle.png" />
+      <img id="helpIcon" class="icon" src="./img/help.png" />
     </div>
   </div>
 
+  <button class="collapsible">Parameters Info</button>
   <div class="containerPopup">
     <div class="popup" id="helpPopup">
       <h1>Command List</h1>
@@ -27,7 +27,9 @@
   </div>
 </body>
 
-<script src="https://unpkg.com/postpre@0.1.5/dist/index.js"
+<script src="../node_modules/@bandaloo/merge-pass/dist/index.js" type="module"></script>
+<script src="../node_modules/postpre/dist/index.js" type="module"></script>
+
 <script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
 <script src="https://d3js.org/d3.v4.js"></script>
 <link
@@ -61,7 +63,8 @@
   uniform float kill;
   uniform float size;
   uniform float audioData;
-  uniform bool diffuse;
+  uniform bool diffuse; 
+  uniform bool automata;
 
   // simulation texture state, swapped each frame
   uniform sampler2D state;
@@ -80,12 +83,12 @@
 
   vec3 laplace(){
     vec3 sum = vec3(0., 0., 0.);
-    
+
     sum = get(-1, -1) * 0.05
         + get( 0, -1) * 0.2
         + get( 1, -1) * 0.05
         + get(-1, 0) * 0.2
-        - get( 0, 0) 
+        - get( 0, 0)
         + get( 1, 0) * 0.2
         + get(-1 , 1) * 0.05
         + get( 0, 1) * 0.2
@@ -96,8 +99,8 @@
 
   vec4 dif(){
     float a = get(0, 0).r;
-    float b = get(0, 0).g;   
-    vec3 lp = laplace(); 
+    float b = get(0, 0).g;
+    vec3 lp = laplace();
 
     float reaction = a*b*b;
 
@@ -108,15 +111,39 @@
     return result;
   }
 
+  vec4 auto(){
+    vec4 result = vec4(0.);
+    
+    float sum = get(-1, -1).g +
+              get(-1,  0).g +
+              get(-1,  1).g +
+              get( 0, -1).g +
+              get( 0,  1).g +
+              get( 1, -1).g +
+              get( 1,  0).g +
+              get( 1,  1).g;
+
+    if (sum == 3.) {
+      result = vec4( 1., 0., 0., 1. );
+    } else if (sum == 2.) {
+      result = vec4( get(0, 0), 1. );
+    } else {
+      result = vec4( 0., 1., 0., 1. );
+    }
+    return result;
+  }
+
   void main() {
     vec4 result = getPrev();
 
     if (diffuse){
       result = dif();
+    }else if (automata){
+      result = auto();
     }else{
       result = getPrev();
     }
-  
+
     gl_FragColor = result;
   }
 </script>
