@@ -2,14 +2,14 @@ import * as parser from "./grammar.js";
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
 import * as graph from "./paramContainer.js"
-import * as MP from "postpre"
+
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
-    uFeed, uKill, uSize, uDiffuse, uColA, uColB,
+    uFeed, uKill, uSize, uDiffuse, uColA, uColB, uAutomata,
     textureBack, textureFront,
     dimensions = { width: null, height: null },
-    diffuse = false,
+    diffuse = false, automata = false,
     colA = style.color("#e6c457"), colB = style.color("#9257e6"),
     audio, audioData, bufferLength, analyser, audioContext, audioElement,
     uVar = {
@@ -62,7 +62,7 @@ window.onload = function () {
 
             audioElement.addEventListener(
                 "ended",
-                () => {},
+                () => { },
                 false
             );
         });
@@ -143,16 +143,16 @@ rateB(audio)`,
     })
 
     paramInfo();
-    
+
 };
 
 // CHANGE TO CHECK WHICH PARAMS ARE IN USE, newline
-function paramInfo(){
+function paramInfo() {
     var printParams = document.getElementById('textParams')
-    while (printParams.firstChild){
+    while (printParams.firstChild) {
         printParams.removeChild(printParams.firstChild)
     }
-    for (let v in uVar){
+    for (let v in uVar) {
         let varInfo = document.createElement('p')
         varInfo.textContent = v + ": " + uVar[v][0] + "\n"
         printParams.append(varInfo)
@@ -183,9 +183,15 @@ function setInitialState() {
 
     var x = width / 2 - 100,
         y = height / 2 - 200;
-
+    
+    //     for (var i = 0; i < width; i++) {
+    //     for (var j = 0; j < height; j++) {
+    //         if (Math.random() > .75) {
+    //             poke(i, j, 0, 255, 0, textureBack)
+    //         }
+    //     }
+    // }
     shape.rect(x, y, 100, 100);
-    //shape.start()
 }
 
 function makeBuffer() {
@@ -273,6 +279,7 @@ function makeShaders() {
     uKill = gl.getUniformLocation(simulationProgram, "kill");
     uSize = gl.getUniformLocation(simulationProgram, "size");
     uDiffuse = gl.getUniformLocation(simulationProgram, "diffuse");
+    uAutomata = gl.getUniformLocation(simulationProgram, "automata");
     uAudio = gl.getUniformLocation(simulationProgram, "audioData");
     uSimulationState = gl.getUniformLocation(simulationProgram, 'state');
     position = gl.getAttribLocation(simulationProgram, "a_position");
@@ -356,7 +363,7 @@ function render() {
             if (uVar[v][1] === true) {
                 let min = uVar[v][2],
                     max = uVar[v][3]
-                audioData = map(audioData, 0, 200, min, max) 
+                audioData = map(audioData, 0, 200, min, max)
                 uVar[v][0] = audioData
                 //console.log(v + ": " + uVar[v][0])
             }
@@ -371,10 +378,11 @@ function render() {
     gl.uniform1f(uFeed, uVar.f[0]);
     gl.uniform1f(uKill, uVar.k[0]);
     gl.uniform1f(uDiffuse, diffuse);
+    gl.uniform1f(uAutomata, automata);
     gl.uniform1f(uAudio, audioData);
 
     paramInfo(); //update param text
-    if (time%100 === 0){
+    if (time % 100 === 0) {
         graph.update(uVar, time);
     }
 
@@ -428,7 +436,7 @@ function colorB(hex) {
 /**********SHAPE FUNCTIONS ********/
 
 function wait(milliseconds) {
-    
+
 
 }
 
@@ -438,10 +446,8 @@ function reset() {
 
 // Diffuse function
 export function setDiffuse(x) {
-
     diffuse = x
     gl.uniform1f(uDiffuse, diffuse);
-    console.log(diffuse)
 }
 
 export function rateA(x) {
@@ -502,8 +508,15 @@ export function feed(x) {
     gl.uniform1f(uFeed, uVar.f[0]);
 }
 
+// Cellular Automata
+function setAutomata(x) {
+    console.log("auto = " + x)
+    automata = x
+    gl.uniform1f(uAutomata, automata)
+}
+
 // Post-processing
-function kal(){
+function kal() {
     const merger = new MP.Merger([( ka = P.kaleidoscope() )], canvas, gl, {
         channels: channels,
     });
@@ -521,22 +534,7 @@ function pauseMusic() {
     audioElement.pause()
 }
 
-// export function checkAudio(x, min, max) {
-//     //console.log(x)
-//     if (x === "audio") {
-//         console.log(audioData)
-
-//         audioData = map(audioData, 0, 150, min, max)
-
-//         return audioData;
-//     } else {
-//         //console.log("no audio")
-//         return x
-//     }
-// }
-
 export default poking
-
 
 // running code via different keyboard shortcuts
 
