@@ -4,17 +4,60 @@
   <div id="infoContainer">
     <div class="iconContainer">
       <img id="shuffleIcon" class="icon" src="./img/shuffle.png" />
-      <img id="helpIcon" class="icon" src="./img/help.png" />
+      <img id="audioIcon" class="icon" src="./img/music.png" />
+      <img
+        id="helpIcon"
+        class="icon"
+        src="./img/help.png"
+        onclick="open(event,'refPopup')"
+      />
     </div>
   </div>
 
-  <button class="collapsible">Parameters Info</button>
   <div class="containerPopup">
-    <div class="popup" id="helpPopup">
-      <h1>Command List</h1>
-      <list>
-        <li>diffuse(boolean): set the diffuse function on or false</li>
-      </list>
+    <div class="popup" id="refPopup">
+      <h1>Reference</h1>
+      <div class="tab">
+        <button class="tabLinks" onclick="openRef(e,'simulations')">
+          Simulations
+        </button>
+        <button class="tabLinks" onclick="openRef(e,'shapes')">Shapes</button>
+        <button class="tabLinks" onclick="openRef(e,'styling')">Styling</button>
+        <button class="tabLinks" onclick="openRef(e,'audio')">Audio</button>
+        <button class="tabLinks" onclick="openRef(e,'postProces')">
+          Post Processing
+        </button>
+      </div>
+
+      <div id="simulations" class="refContent">
+        <list>
+          <li>diffuse(boolean): set the diffuse function on or false</li>
+        </list>
+      </div>
+
+      <div id="shapes" class="refContent">
+        <list>
+          <li>rect()</li>
+        </list>
+      </div>
+
+      <div id="styling" class="refContent">
+        <list>
+          <li>colorA():</li>
+        </list>
+      </div>
+
+      <div id="audio" class="refContent">
+        <list>
+          <li>audio(bool):</li>
+        </list>
+      </div>
+
+      <div id="postProcess" class="refContent">
+        <list>
+          <li>kal:</li>
+        </list>
+      </div>
     </div>
   </div>
 
@@ -25,10 +68,9 @@
     <div id="textParams"></div>
     <div id="graphParams"></div>
   </div>
-</body>
 
-<script src="../node_modules/@bandaloo/merge-pass/dist/index.js" type="module"></script>
-<script src="../node_modules/postpre/dist/index.js" type="module"></script>
+  <button class="collapsible">Parameters Info</button>
+</body>
 
 <script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
 <script src="https://d3js.org/d3.v4.js"></script>
@@ -63,7 +105,7 @@
   uniform float kill;
   uniform float size;
   uniform float audioData;
-  uniform bool diffuse; 
+  uniform bool diffuse;
   uniform bool automata;
 
   // simulation texture state, swapped each frame
@@ -113,7 +155,7 @@
 
   vec4 auto(){
     vec4 result = vec4(0.);
-    
+
     float sum = get(-1, -1).g +
               get(-1,  0).g +
               get(-1,  1).g +

@@ -1,11 +1,8 @@
 import * as parser from "./grammar.js";
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
-import * as graph from "./paramContainer.js"
-// import * as MP from "../node_modules/@bandaloo/merge-pass/dist/index.js"
-// import * as P from "../node_modules/postpre/dist/index.js"
+import * as graph from "./gui/paramContainer.js"
 
-import * as MP from "../node_modules/@bandaloo/merge-pass/dist/index.js"
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -43,6 +40,11 @@ window.onload = function () {
             audioElement = document.querySelector("audio");
             //const track = audioContext.createMediaStreamSource(stream);
             const track = audioContext.createMediaElementSource(audioElement);
+
+
+            const mediaStreamDestination = audioContext.createMediaStreamDestination();
+
+            
 
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
