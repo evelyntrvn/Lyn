@@ -1,17 +1,10 @@
 
 function open(event, popupName){
-    var popups = document.getElementsByClassName('popup'),
-        button = document.getElementById('helpIcon');
+    // var popups = document.getElementsByClassName('popup'),
+    //     button = document.getElementById('helpIcon');
 
-    
-    // hide all the content in reference
-    // for (let i = 0; i < popups.length; i++){
-    //     popups[i].getElementsByClassName.display = 'none';
-    // }
 
-    //show active tab
     document.getElementById(popupName).style.display = 'block';
-    //event.currentTarget.className += ' active'; 
 }
 
 function openRef(e, tab){
