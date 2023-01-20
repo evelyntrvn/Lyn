@@ -2,7 +2,9 @@ import * as parser from "./grammar.js";
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
 import * as graph from "./paramContainer.js"
+// import * as P from "https://unpkg.com/postpre@0.1.5/dist/index.js"
 
+import * as MP from "../node_modules/@bandaloo/merge-pass/dist/index.js"
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -184,14 +186,16 @@ function setInitialState() {
     var x = width / 2 - 100,
         y = height / 2 - 200;
     
-    //     for (var i = 0; i < width; i++) {
-    //     for (var j = 0; j < height; j++) {
-    //         if (Math.random() > .75) {
-    //             poke(i, j, 0, 255, 0, textureBack)
-    //         }
-    //     }
-    // }
-    shape.rect(x, y, 100, 100);
+    for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
+            if (Math.random() > .75) {
+                poke(i, j, 0, 255, 0, textureBack)
+            }else{
+                poke(i, j, 255, 0, 0, textureBack)
+            }
+        }
+    }
+    //shape.rect(x, y, 100, 100);
 }
 
 function makeBuffer() {
