@@ -2,7 +2,8 @@ import * as parser from "./grammar.js";
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
 import * as graph from "./paramContainer.js"
-// import * as P from "https://unpkg.com/postpre@0.1.5/dist/index.js"
+// import * as MP from "../node_modules/@bandaloo/merge-pass/dist/index.js"
+// import * as P from "../node_modules/postpre/dist/index.js"
 
 import * as MP from "../node_modules/@bandaloo/merge-pass/dist/index.js"
 
