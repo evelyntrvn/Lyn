@@ -1,13 +1,10 @@
 
-function open(event, popupName){
-    // var popups = document.getElementsByClassName('popup'),
-    //     button = document.getElementById('helpIcon');
-
-
-    document.getElementById(popupName).style.display = 'block';
+function openPopup(event, popupName){
+    document.getElementById("containerPopup").style.display = 'block';
+    document.getElementById(popupName).style.display = "block";
 }
 
-function openRef(e, tab){
+function openRef(event, tab){
     var refContent = document.getElementsByClassName('refContent');
     
     // hide all the content in reference
@@ -24,4 +21,11 @@ function openRef(e, tab){
     //show active tab
     document.getElementById(tab).style.display = 'block';
     e.currentTarget.className += ' active';
+}
+
+window.onload = function (){
+    var helpIcon = document.getElementById('helpIcon')
+    helpIcon.addEventListener("click", (e) => {
+        openPopup(e, "refPopup")
+    })
 }

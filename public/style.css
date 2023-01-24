@@ -23,7 +23,7 @@ body {
   height: auto;
 }
 
-.containerPopup {
+#containerPopup {
   position: relative;
   position: fixed;
   top: 0;
@@ -31,7 +31,8 @@ body {
   bottom: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.658);
-  z-index: -1;
+  z-index: 3;
+  display: none;
 }
 
 .popup {
@@ -49,13 +50,14 @@ body {
   border-radius: 5px;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  z-index: 0;
+  z-index: 4;
 }
 
 
 .tab {
   overflow: hidden;
   background-color: #282828e5;
+  width: 100%;
 }
 
 .tab button {

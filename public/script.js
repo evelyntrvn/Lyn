@@ -2,7 +2,11 @@ import * as parser from "./grammar.js";
 import * as shape from "./functions/shapes.js"
 import * as style from "./functions/styles.js"
 import * as graph from "./gui/paramContainer.js"
+import * as popup from "./gui/popup.js"
 
+export function openRef(event, tabName){
+    console.log('click')
+}
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -120,11 +124,15 @@ rateB(audio)`,
         }
     });
 
-    var helpIcon = document.getElementById('helpIcon')
-    helpIcon.addEventListener("click", (e) => {
-        document.getElementById('helpPopup').style.zIndex = "5"
-        console.log('click')
-    })
+    // var helpIcon = document.getElementById('helpIcon')
+    // helpIcon.addEventListener("click", (e) => {
+    //     popup.openPopup(e, "refPopup")
+    // })
+
+    // var tabs = document.getElementsByClassName('tabLinks')
+    // for (t in tabs){
+        
+    // }
 
     var shuffleIcon = document.getElementById('shuffleIcon')
     shuffleIcon.addEventListener("click", (e) => {
@@ -590,3 +598,4 @@ function flash(cm, pos) {
     }
     console.log("highlighted")
 }
+
