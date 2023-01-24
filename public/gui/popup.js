@@ -1,5 +1,5 @@
 
-function openPopup(event, popupName){
+export function openPopup(event, popupName){
     document.getElementById("containerPopup").style.display = 'block';
     document.getElementById(popupName).style.display = "block";
 }

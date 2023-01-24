@@ -124,10 +124,10 @@ rateB(audio)`,
         }
     });
 
-    // var helpIcon = document.getElementById('helpIcon')
-    // helpIcon.addEventListener("click", (e) => {
-    //     popup.openPopup(e, "refPopup")
-    // })
+    var helpIcon = document.getElementById('helpIcon')
+    helpIcon.addEventListener("click", (e) => {
+        popup.openPopup(e, "refPopup")
+    })
 
     // var tabs = document.getElementsByClassName('tabLinks')
     // for (t in tabs){
