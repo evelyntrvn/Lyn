@@ -26,9 +26,9 @@ _ "whitespace" = [ \t\n\r]*
 //    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / cellFct / reset / music / audio / time / rect /
+keyword "keyword" = difFct / cellFct / effects/ reset / music / audio / time / rect /
 					     rateA / rateB / feed / kill / wait / primary /
-                    hex / col / effects / $[^{} \t\n\r] +
+                    hex / col / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
@@ -85,4 +85,4 @@ colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
 
 /** Post Processing **/
 effects = kal
-kal = "kal"{ return `kal()`;}
+kal = "kal(" side:primary "," size:primary")"{ return `kal(${side}, ${size})`;}
