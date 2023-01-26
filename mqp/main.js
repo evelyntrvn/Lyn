@@ -1,9 +1,8 @@
-import * as parser from "./grammar.js";
-import * as shape from "./functions/shapes.js"
-import * as style from "./functions/styles.js"
-import * as graph from "./paramContainer.js"
-import * as MP from "@bandaloo/merge-pass"
-import * as P from "postpre"
+import * as parser from "./public/grammar.js";
+import * as shape from "./public/functions/shapes.js"
+import * as style from "./public/functions/styles.js"
+import * as graph from "./public/paramContainer.js"
+import { kal } from "./public/functions/processing.js";
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -68,10 +67,11 @@ window.onload = function () {
             );
         });
 
-    const canvas = document.getElementById("gl");
+    const canvas = document.getElementById("gl"),
+        processed = document.getElementById("processed");
     gl = canvas.getContext("webgl");
-    width = canvas.width = dimensions.width = window.innerWidth;
-    height = canvas.height = dimensions.height = window.innerHeight;
+    width = canvas.width  = processed.width = dimensions.width = window.innerWidth;
+    height = canvas.height = processed.height = dimensions.height = window.innerHeight;
 
     // define drawing area of webgl canvas. bottom corner, width / height
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -89,11 +89,7 @@ rateA(1)
 rateB(0.2)
 diffuse(true)
 
-feed(0.015)
-kill(0.049)
-rateA(0.21)
-rateB(0.105)
-diffuse(true)
+kal
 
 diffuse(false)
 
@@ -145,6 +141,7 @@ rateB(audio)`,
 
     paramInfo();
 
+
 };
 
 // CHANGE TO CHECK WHICH PARAMS ARE IN USE, newline
@@ -182,19 +179,20 @@ function setInitialState() {
     gl.uniform1f(uFeed, uVar.f[0]);
     gl.uniform1f(uKill, uVar.k[0]);
 
-    var x = width / 2 - 100,
-        y = height / 2 - 200;
-    
-    for (var i = 0; i < width; i++) {
-        for (var j = 0; j < height; j++) {
-            if (Math.random() > .75) {
-                poke(i, j, 0, 255, 0, textureBack)
-            }else{
-                poke(i, j, 255, 0, 0, textureBack)
-            }
-        }
-    }
-    //shape.rect(x, y, 100, 100);
+    var x = width / 2 ,
+        y = height / 2 ;
+
+    // for (var i = 0; i < width; i++) {
+    //     for (var j = 0; j < height; j++) {
+    //         if (Math.random() > .75) {
+    //             poke(i, j, 0, 255, 0, textureBack)
+    //         } else {
+    //             poke(i, j, 255, 0, 0, textureBack)
+    //         }
+    //     }
+    // }
+    shape.rect(x, y, 100, 100);
+
 }
 
 function makeBuffer() {
@@ -516,13 +514,6 @@ function setAutomata(x) {
     console.log("auto = " + x)
     automata = x
     gl.uniform1f(uAutomata, automata)
-}
-
-// Post-processing
-function kal() {
-    const merger = new MP.Merger([( ka = P.kaleidoscope() )], canvas, gl, {
-        channels: channels,
-    });
 }
 
 // Audio Functions
