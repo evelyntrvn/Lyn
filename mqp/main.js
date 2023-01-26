@@ -95,7 +95,7 @@ diffuse(false)
 
 playMusic
 pauseMusic
-rateB(audio)`,
+kill(audio)`,
         mode: "javascript",
         lineNumbers: true
     });

@@ -7,11 +7,16 @@ const canvas = document.getElementById("gl"),
     processed = document.getElementById("processed"),
     gl = processed.getContext("webgl");
 
-export function kal() {
+export function kal(sides = 8, size = 1) {
     let ka;
-    const merger = new MP.Merger([(ka = P.kaleidoscope(5, 1))], canvas, gl);
+    const merger = new MP.Merger([(ka = P.kaleidoscope(sides, size))], canvas, gl);
 
-    merger.draw()
-    console.log("drawing")
+    let frame = 0;
+    const step = (t = 0) => {
+        merger.draw(t / 1000);
+        requestAnimationFrame(step)
+        frame++;
+    };
+    step(0);
 
 }
