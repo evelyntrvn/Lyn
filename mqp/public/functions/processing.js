@@ -20,3 +20,13 @@ export function kal(sides = 8, size = 1) {
     step(0);
 
 }
+
+// function noEffect(){
+
+// }
+
+function swapCanvas(){
+    let tmp = canvas.style.zIndex 
+    canvas.style.zIndex = processed.style.zIndex
+    processed.style.zIndex = tmp
+}
