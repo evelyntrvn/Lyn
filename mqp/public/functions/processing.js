@@ -8,7 +8,7 @@ const canvas = document.getElementById("gl"),
     gl = processed.getContext("webgl");
 
 var effectParams = {
-    kaleidoscope: {side: 8, size: 1},
+    kaleidoscope: {side: 12, size: 1},
 },
     processCanvas = false       // if false, canvas is on top; if true, processed is on top
 
