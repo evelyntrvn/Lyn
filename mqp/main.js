@@ -2,7 +2,7 @@ import * as parser from "./public/grammar.js";
 import * as shape from "./public/functions/shapes.js"
 import * as style from "./public/functions/styles.js"
 import * as graph from "./public/paramContainer.js"
-import { kal } from "./public/functions/processing.js";
+import { kal, noEffect } from "./public/functions/processing.js";
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,

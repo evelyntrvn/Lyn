@@ -1,7 +1,7 @@
 start "start" = term +
 term "term" = _? body:(keyword / sentence) _ { return body; } // keyword to word
 
-POINT = "." {return "point" }
+POINT = "." 
 DIGIT = [0-9]
 INTDIGIT = [1-9]
 TRUE = "true" / "True" { return "true" }
@@ -26,7 +26,7 @@ _ "whitespace" = [ \t\n\r]*
 //    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / cellFct / effects/ reset / music / audio / time / rect /
+keyword "keyword" = difFct / cellFct / effects / reset / music / audio / time / rect /
 					     rateA / rateB / feed / kill / wait / primary /
                     hex / col / $[^{} \t\n\r] +
 
@@ -84,5 +84,10 @@ colorA = "colorA(" h:hex ")"{ return `colorA(${h})` ; } // change to be an equal
 colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
 
 /** Post Processing **/
-effects = kal
-kal = "kal(" side:primary "," size:primary")"{ return `kal(${side}, ${size})`;}
+effects = noEffect / kalSize / kalSide / kal 
+
+noEffect = "noEffect"{ return `noEffect()` }
+
+kal "kal"= "kal"{ return `kal()`;}
+kalSide = POINT "side(" side:primary ")"{ return `kalSide(${side})`}
+kalSize = POINT "size(" size:primary ")"{ return `kalSize(${size})`}

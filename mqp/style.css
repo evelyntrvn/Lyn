@@ -9,7 +9,14 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+#gl{
   z-index: 0;
+}
+
+#processed{
+  z-index: -1;
 }
 
 #editor {
