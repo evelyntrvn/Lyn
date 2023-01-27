@@ -1,7 +1,7 @@
 start "start" = term +
 term "term" = _? body:(keyword / sentence) _ { return body; } // keyword to word
 
-POINT = "." {return "point" }
+POINT = "." 
 DIGIT = [0-9]
 INTDIGIT = [1-9]
 TRUE = "true" / "True" { return "true" }
@@ -26,9 +26,9 @@ _ "whitespace" = [ \t\n\r]*
 //    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = difFct / reset / music / audio / time / rect /
+keyword "keyword" = difFct / cellFct / effects / reset / music / audio / time / rect /
 					     rateA / rateB / feed / kill / wait / primary /
-                    hex / col / effects / $[^{} \t\n\r] +
+                    hex / col / $[^{} \t\n\r] +
 
 // Input and other
 audio = "audio" { return "'audio'";} //i want to be able to set audio on and off
@@ -68,6 +68,11 @@ size = "size(" s:difInput ")" { return `size(${s})` ; }
 wait = "wait(" t:primary ")" { return `wait(${t}*1000)` } // time in sec
 reset = "reset" { return `reset()` }
 
+/****** Cellular Automata attributes ****/
+cellFct = automata
+
+automata  = "automata(" bool:boolean ")"{ return `setAutomata(${bool})`;}
+
 /***** music ****/
 music = playMusic / pauseMusic
 playMusic = "playMusic" { return `playMusic()` }
@@ -79,5 +84,10 @@ colorA = "colorA(" h:hex ")"{ return `colorA(${h})` ; } // change to be an equal
 colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
 
 /** Post Processing **/
-effects = kal
-kal = "kal"{ return `kal()`;}
+effects = noEffect / kalSize / kalSide / kal 
+
+noEffect = "noEffect"{ return `noEffect()` }
+
+kal "kal"= "kal"{ return `kal()`;}
+kalSide = POINT "side(" side:primary ")"{ return `kalSide(${side})`}
+kalSize = POINT "size(" size:primary ")"{ return `kalSize(${size})`}

@@ -1,0 +1,128 @@
+/* GENERAL PAGE */
+
+body {
+  margin: 0;
+  background: black;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#gl{
+  z-index: 0;
+}
+
+#processed{
+  z-index: -1;
+}
+
+#editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  min-width: 16%;
+}
+
+.CodeMirror {
+  color: rgb(255, 255, 255);
+  background-color: #282828a4;
+}
+
+.CodeMirror-highlight {
+  background: var(--b_low);
+}
+
+/* TOP BAR */
+
+#infoContainer {
+  position: sticky;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.iconContainer {
+  height: fit-content;
+  width: fit-content;
+}
+
+.icon {
+  z-index: inherit;
+  padding: 15px;
+  width: 30px;
+  height: auto;
+}
+
+/* POPUPS */
+.containerPopup {
+  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.658);
+  z-index: -1;
+}
+
+.popup {
+  width: 50%;
+  height: 50%;
+  background: #d2dde2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  padding: 15px;
+  border-radius: 5px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+#helpPopup {
+  z-index: 0;
+}
+
+/* PARAM INFO */
+
+#paramContainer {
+  background-color: rgba(0, 0, 0, 0.41);
+  color: white;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  width: 16%;
+  height: auto;
+  padding: 1em;
+  font-size: 0.75rem;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.collapsible {
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.736);
+  color: white;
+  cursor: pointer;
+  padding: 1em;
+  width: 16%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.active,
+.collapsible:hover {
+  background-color: rgba(0, 0, 0, 0.642);
+}

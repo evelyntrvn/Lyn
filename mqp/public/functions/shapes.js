@@ -1,6 +1,6 @@
 /**********SHAPE FUNCTIONS ********/
 
-import poking from "../script.js"
+import poking from "../../main.js"
 
 export function start() {
     for (var i = 0; i < window.innerWidth; i++) {
