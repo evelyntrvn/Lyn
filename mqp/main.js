@@ -548,9 +548,27 @@ function setAutomata(x) {
 
 // Audio Functions
 
-function playMusic() {
-    playing = true
-    audioElement.play()
+function playMusic(track) {
+    if (checkAudio(track)){
+        audioElement = document.getElementsByClassName('audio-input')[track-1]
+
+        playing = true
+        audioElement.play()
+    }else{
+        console.log("audio file is invalid")
+
+    }
+    
+    
+
+    function checkAudio(track){
+        let audioFile = document.getElementsByClassName('audio-input')[track-1]
+
+        if (audioFile !== null){
+            return false;
+        }
+        return true
+    }
 }
 
 function pauseMusic() {
