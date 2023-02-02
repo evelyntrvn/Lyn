@@ -112,13 +112,30 @@ kill(audio)`,
         }
     });
 
-    var helpIcon = document.getElementById('helpIcon')
+    var helpIcon = document.getElementById('helpIcon'),
+        overlay = document.getElementById('popupContainer'),
+        shuffleIcon = document.getElementById('shuffleIcon'),
+        tabHeader = document.getElementsByClassName('tab-header')[0],
+        tabIndicator = document.getElementsByClassName('tab-indicator')[0],
+        tabBody = document.getElementsByClassName('tab-body')[0],
+        tabs = tabHeader.getElementsByTagName('div');
+
     helpIcon.addEventListener("click", (e) => {
-        document.getElementById('helpPopup').style.zIndex = "5"
+        let popup = document.getElementById('helpPopup')
+        popup.classList.add("open-popup")
+
+        overlay.style.visibility = "visible"
         console.log('click')
     })
 
-    var shuffleIcon = document.getElementById('shuffleIcon')
+    overlay.addEventListener("click", (e) =>{
+        let popups = document.getElementsByClassName("popup")
+        overlay.style.visibility = "hidden"
+        for (let p of popups){
+            p.classList.remove("open-popup")
+        }
+    })
+
     shuffleIcon.addEventListener("click", (e) => {
         let i = Math.floor(Math.random() * (presets.length - 1));
         while (i === prevShuffle) {
@@ -138,6 +155,19 @@ kill(audio)`,
 
         prevShuffle = i
     })
+
+    // tabs for reference popup
+    for (let i = 0; i < tabs.length; i++){
+        tabs[i].addEventListener('click', (e)=>{
+            tabHeader.getElementsByClassName('active-tab')[0].classList.remove('active-tab');
+            tabs[i].classList.add('active-tab')
+
+            tabBody.getElementsByClassName('active-tab')[0].classList.remove('active-tab');
+            tabBody.getElementsByTagName('div')[i].classList.add('active-tab')
+
+            tabIndicator.style.left = `calc(calc(100% / 3) * ${i})`;
+        })
+    }
 
     paramInfo();
 
