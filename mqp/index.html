@@ -1,6 +1,15 @@
 <head> </head>
 
 <body>
+  <div class="loading">
+    <div class="loading-container">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  
   <div id="infoContainer">
     <div class="iconContainer">
       <img id="shuffleIcon" class="icon" src="./public/img/shuffle.png" />
@@ -8,33 +17,78 @@
     </div>
   </div>
 
-  <button class="collapsible">Parameters Info</button>
-  <div class="containerPopup">
-    <div class="popup" id="helpPopup">
-      <h1>Command List</h1>
-      <list>
-        <li>diffuse(boolean): set the diffuse function on or false</li>
-      </list>
+  <!-- POPUPS -->
+  <div class="popup" id="helpPopup">
+    <h1>Command List</h1>
+
+    <!-- TABS -->
+    <div class="tab-header">
+      <div class="active-tab">
+        <i class="ref-tab"></i> Simulation
+      </div>
+      <div >
+        <i class="ref-tab"></i> Audio
+      </div>
+      <div>
+        <i class="ref-tab"></i> Effects
+      </div>
     </div>
+
+    <div class="tab-indicator"></div>
+    <div class="tab-body">
+
+      <div class="active-tab">
+        <h2>Simulations</h2>
+        <list>
+          <li>diffuse(boolean): set the diffuse function on or false</li>
+        </list>
+      </div>
+      
+
+      <div>
+        <h2>Audio</h2>
+        <input type="file" class="audio-input"></input>
+        <input type="file" class="audio-input"></input>
+        <input type="file" class="audio-input"></input>
+      </div>
+
+      <div>
+        <h2>Effects</h2>
+        <list>
+          <li>diffuse(boolean): set the diffuse function on or false</li>
+        </list>
+      </div>
+
+    </div>
+
+   
+  </div>
+  <div class="overlay" id="popupContainer">
   </div>
 
   <div id="editor"></div>
   <canvas id="gl"></canvas>
+
   <audio src="./public/audio/tokyo_tea.mp3"></audio>
+
   <div id="paramContainer">
+    <button class="collapsible">Parameters Info</button>
+
     <div id="textParams"></div>
     <div id="graphParams"></div>
   </div>
+
   <canvas id="processed"></canvas>
 </body>
 
 
+
 <script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
+<script src="https://unpkg.com/codemirror-colorpicker@1.9.80/dist/codemirror-colorpicker.js"></script>
+
 <script src="https://d3js.org/d3.v4.js"></script>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"/>
+<link rel="stylesheet" href="https://unpkg.com/codemirror-colorpicker@1.9.80/dist/codemirror-colorpicker.css" />
 <link rel="stylesheet" href="style.css" />
 
 <script src="https://cdn.jsdelivr.net/npm/tweakpane@3.0.7/dist/tweakpane.min.js"></script>

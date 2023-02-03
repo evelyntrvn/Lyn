@@ -3,6 +3,7 @@ import * as shape from "./public/functions/shapes.js"
 import * as style from "./public/functions/styles.js"
 import * as graph from "./public/paramContainer.js"
 import { kal, noEffect } from "./public/functions/processing.js";
+import { input } from "@bandaloo/merge-pass";
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -46,13 +47,10 @@ window.onload = function () {
             bufferLength = analyser.frequencyBinCount;
             audio = new Uint8Array(bufferLength);
 
-            console.log(bufferLength);
-
             track.connect(analyser);
             analyser.connect(audioContext.destination);
 
             analyser.getByteFrequencyData(audio);
-            console.log(audio);
             mic = true;
             // getAudioData(audio);
 
@@ -70,7 +68,7 @@ window.onload = function () {
     const canvas = document.getElementById("gl"),
         processed = document.getElementById("processed");
     gl = canvas.getContext("webgl");
-    width = canvas.width  = processed.width = dimensions.width = window.innerWidth;
+    width = canvas.width = processed.width = dimensions.width = window.innerWidth;
     height = canvas.height = processed.height = dimensions.height = window.innerHeight;
 
     // define drawing area of webgl canvas. bottom corner, width / height
@@ -84,20 +82,19 @@ window.onload = function () {
     const cm = CodeMirror(document.getElementById("editor"), {
         value:
             `feed(0.029)
-kill(0.057)
+kill(audio)
 rateA(1)
 rateB(0.2)
 diffuse(true)
-
-kal
-
-diffuse(false)
-
-playMusic
-pauseMusic
-kill(audio)`,
+            
+playMusic(1)`,
         mode: "javascript",
-        lineNumbers: true
+        lineNumbers: true,
+        colorpicker : {
+            mode : 'edit',
+            type: 'mini',
+            outputFormat: 'hex', //doesn't work
+        }
     });
 
     cm.setOption("extraKeys", {
@@ -109,16 +106,33 @@ kill(audio)`,
         },
         "Shift-Enter": function (cm) {
             runSelected(cm)
-        }
+        },
     });
 
-    var helpIcon = document.getElementById('helpIcon')
+    var helpIcon = document.getElementById('helpIcon'),
+        overlay = document.getElementById('popupContainer'),
+        shuffleIcon = document.getElementById('shuffleIcon'),
+        tabHeader = document.getElementsByClassName('tab-header')[0],
+        tabIndicator = document.getElementsByClassName('tab-indicator')[0],
+        tabBody = document.getElementsByClassName('tab-body')[0],
+        tabs = tabHeader.getElementsByTagName('div');
+
     helpIcon.addEventListener("click", (e) => {
-        document.getElementById('helpPopup').style.zIndex = "5"
+        let popup = document.getElementById('helpPopup')
+        popup.classList.add("open-popup")
+
+        overlay.style.visibility = "visible"
         console.log('click')
     })
 
-    var shuffleIcon = document.getElementById('shuffleIcon')
+    overlay.addEventListener("click", (e) => {
+        let popups = document.getElementsByClassName("popup")
+        overlay.style.visibility = "hidden"
+        for (let p of popups) {
+            p.classList.remove("open-popup")
+        }
+    })
+
     shuffleIcon.addEventListener("click", (e) => {
         let i = Math.floor(Math.random() * (presets.length - 1));
         while (i === prevShuffle) {
@@ -139,10 +153,22 @@ kill(audio)`,
         prevShuffle = i
     })
 
+    // tabs for reference popup
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener('click', (e) => {
+            tabHeader.getElementsByClassName('active-tab')[0].classList.remove('active-tab');
+            tabs[i].classList.add('active-tab')
+
+            tabBody.getElementsByClassName('active-tab')[0].classList.remove('active-tab');
+            tabBody.getElementsByTagName('div')[i].classList.add('active-tab')
+
+            tabIndicator.style.left = `calc(calc(100% / 3) * ${i})`;
+        })
+    }
+
     paramInfo();
-
-
 };
+
 
 // CHANGE TO CHECK WHICH PARAMS ARE IN USE, newline
 function paramInfo() {
@@ -152,7 +178,8 @@ function paramInfo() {
     }
     for (let v in uVar) {
         let varInfo = document.createElement('p')
-        varInfo.textContent = v + ": " + uVar[v][0] + "\n"
+        let num = parseFloat(uVar[v][0]).toFixed(4)
+        varInfo.textContent = v + ": " + num + "\n"
         printParams.append(varInfo)
     }
 }
@@ -179,8 +206,8 @@ function setInitialState() {
     gl.uniform1f(uFeed, uVar.f[0]);
     gl.uniform1f(uKill, uVar.k[0]);
 
-    var x = width / 2 ,
-        y = height / 2 ;
+    var x = width / 2,
+        y = height / 2;
 
     // for (var i = 0; i < width; i++) {
     //     for (var j = 0; j < height; j++) {
@@ -382,8 +409,9 @@ function render() {
     gl.uniform1f(uAutomata, automata);
     gl.uniform1f(uAudio, audioData);
 
-    paramInfo(); //update param text
+     //update param text
     if (time % 100 === 0) {
+        paramInfo()
         graph.update(uVar, time);
     }
 
@@ -518,9 +546,43 @@ function setAutomata(x) {
 
 // Audio Functions
 
-function playMusic() {
-    playing = true
-    audioElement.play()
+function playMusic(track) {
+    if (checkAudio(track)) {
+        var audioFile = document.getElementsByClassName('audio-input')[track - 1].files[0]
+
+        var fr = new FileReader();
+        fr.onload = (e) => {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            ctx.decodeAudioData(e.target.result).then(function (buffer) {
+                var audioSource = ctx.createBufferSource();
+                audioSource.buffer = buffer;
+            })
+        }
+
+        fr.readAsArrayBuffer(audioFile)
+        const urlObj = URL.createObjectURL(audioFile);
+
+        audioElement.addEventListener("load", () => {
+            URL.revokeObjectURL(urlObj);
+        });
+
+        audioElement.src = urlObj;
+
+        playing = true
+        audioElement.play()
+    } else {
+        console.log("audio file is invalid")
+
+    }
+
+
+    function checkAudio(track) {
+        let audioFile = document.getElementsByClassName('audio-input')[track - 1].files[0]
+        if (audioFile !== null) {
+            return true;
+        }
+        return false
+    }
 }
 
 function pauseMusic() {

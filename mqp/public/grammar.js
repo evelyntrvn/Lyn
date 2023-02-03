@@ -192,7 +192,7 @@ function peg$parse(input, options) {
   var peg$c18 = "wait(";
   var peg$c19 = "reset";
   var peg$c20 = "automata(";
-  var peg$c21 = "playMusic";
+  var peg$c21 = "playMusic(";
   var peg$c22 = "pauseMusic";
   var peg$c23 = "colorA(";
   var peg$c24 = "colorB(";
@@ -239,7 +239,7 @@ function peg$parse(input, options) {
   var peg$e29 = peg$literalExpectation("wait(", false);
   var peg$e30 = peg$literalExpectation("reset", false);
   var peg$e31 = peg$literalExpectation("automata(", false);
-  var peg$e32 = peg$literalExpectation("playMusic", false);
+  var peg$e32 = peg$literalExpectation("playMusic(", false);
   var peg$e33 = peg$literalExpectation("pauseMusic", false);
   var peg$e34 = peg$literalExpectation("colorA(", false);
   var peg$e35 = peg$literalExpectation("colorB(", false);
@@ -273,7 +273,7 @@ function peg$parse(input, options) {
   var peg$f19 = function(t) { return `wait(${t}*1000)` };
   var peg$f20 = function() { return `reset()` };
   var peg$f21 = function(bool) { return `setAutomata(${bool})`;};
-  var peg$f22 = function() { return `playMusic()` };
+  var peg$f22 = function(trackNum) { return `playMusic(${trackNum})` };
   var peg$f23 = function() { return `pauseMusic()` };
   var peg$f24 = function(h) { return `colorA(${h})` ; };
   var peg$f25 = function(h) { return `colorB(${h})` ; };
@@ -1455,21 +1455,41 @@ function peg$parse(input, options) {
   }
 
   function peg$parseplayMusic() {
-    var s0, s1;
+    var s0, s1, s2, s3;
 
     s0 = peg$currPos;
-    if (input.substr(peg$currPos, 9) === peg$c21) {
+    if (input.substr(peg$currPos, 10) === peg$c21) {
       s1 = peg$c21;
-      peg$currPos += 9;
+      peg$currPos += 10;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) { peg$fail(peg$e32); }
     }
     if (s1 !== peg$FAILED) {
-      peg$savedPos = s0;
-      s1 = peg$f22();
+      s2 = peg$parseint();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 41) {
+          s3 = peg$c12;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$e23); }
+        }
+        if (s3 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s0 = peg$f22(s2);
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
     }
-    s0 = s1;
 
     return s0;
   }

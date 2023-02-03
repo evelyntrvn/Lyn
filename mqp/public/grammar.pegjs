@@ -75,7 +75,7 @@ automata  = "automata(" bool:boolean ")"{ return `setAutomata(${bool})`;}
 
 /***** music ****/
 music = playMusic / pauseMusic
-playMusic = "playMusic" { return `playMusic()` }
+playMusic = "playMusic(" trackNum:int ")" { return `playMusic(${trackNum})` }
 pauseMusic = "pauseMusic" { return `pauseMusic()` } 
 
 /** colors **/
