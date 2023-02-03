@@ -91,7 +91,9 @@ playMusic(1)`,
         mode: "javascript",
         lineNumbers: true,
         colorpicker : {
-            mode : 'edit'
+            mode : 'edit',
+            type: 'mini',
+            outputFormat: 'hex', //doesn't work
         }
     });
 

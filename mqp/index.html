@@ -10,15 +10,12 @@
     </div>
   </div>
   
-
   <div id="infoContainer">
     <div class="iconContainer">
       <img id="shuffleIcon" class="icon" src="./public/img/shuffle.png" />
       <img id="helpIcon" class="icon" src="./public/img/help.png" />
     </div>
   </div>
-
-  <button class="collapsible">Parameters Info</button>
 
   <!-- POPUPS -->
   <div class="popup" id="helpPopup">
@@ -53,8 +50,6 @@
         <input type="file" class="audio-input"></input>
         <input type="file" class="audio-input"></input>
         <input type="file" class="audio-input"></input>
-
-
       </div>
 
       <div>
@@ -73,13 +68,19 @@
 
   <div id="editor"></div>
   <canvas id="gl"></canvas>
+
   <audio src="./public/audio/tokyo_tea.mp3"></audio>
+
   <div id="paramContainer">
+    <button class="collapsible">Parameters Info</button>
+
     <div id="textParams"></div>
     <div id="graphParams"></div>
   </div>
+
   <canvas id="processed"></canvas>
 </body>
+
 
 
 <script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
