@@ -35,6 +35,7 @@ canvas {
   background: var(--b_low);
 }
 
+
 /* TOP BAR */
 
 #infoContainer {
@@ -180,14 +181,18 @@ canvas {
   }
 }
 
+.loading-container >div{
+  background-image: linear-gradient(45deg, #fffdf4, #d8d0c1);
+  box-shadow: 0 0 3px #fffdf4;
+
+}
+
 .loading-container >div:nth-child(1){
   height: 75px;
   width: 75px;
-  background-image: linear-gradient(45deg, #f7d000, #e6970e);
   position: absolute;
   top: 100px;
   left: 100px;
-  box-shadow: 0 0 3px #f7d000;
   border-radius: 50%;
   animation: move1 1.5s infinite;
 }
@@ -201,11 +206,10 @@ canvas {
 .loading-container >div:nth-child(2){
   height: 45px;
   width: 45px;
-  background-image: linear-gradient(45deg, #00d7f7, #04c0f5);
   position: absolute;
   top: 105px;
   right: 110px;
-  box-shadow: 0 0 2px #00d7f7;
+  box-shadow: 0 0 2px;
   border-radius: 50%;
   animation: move2 1.5s infinite;
 }
@@ -220,11 +224,9 @@ canvas {
 .loading-container >div:nth-child(3){
   height: 75px;
   width: 75px;
-  background-image: linear-gradient(45deg, #f60180, #f7014f);
   position: absolute;
   bottom: 100px;
   right: 100px;
-  box-shadow: 0 0 3px #f60180;
   border-radius: 50%;
   animation: move3 1.5s infinite;
 }
@@ -238,11 +240,10 @@ canvas {
 .loading-container >div:nth-child(4){
   height: 45px;
   width: 45px;
-  background-image: linear-gradient(45deg, #da00f7, #b501f6);
   position: absolute;
   bottom: 105px;
   left: 110px;
-  box-shadow: 0 0 2px #da00f7;
+  box-shadow: 0 0 2px;
   border-radius: 50%;
   animation: move4 1.5s infinite;
 }

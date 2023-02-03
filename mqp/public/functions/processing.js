@@ -8,7 +8,7 @@ const canvas = document.getElementById("gl"),
     gl = processed.getContext("webgl");
 
 var effectParams = {
-    kaleidoscope: {side: 12, size: 1},
+    kal: {side: 12, size: 1},
 },
     processCanvas = false       // if false, canvas is on top; if true, processed is on top
 
@@ -18,7 +18,7 @@ export function kal() {
     }
 
     let ka;
-    const merger = new MP.Merger([(ka = P.kaleidoscope(effectParams.kaleidoscope.side, effectParams.kaleidoscope.side))],
+    const merger = new MP.Merger([(ka = P.kaleidoscope(effectParams.kal.side, effectParams.kal.side))],
     canvas, gl);
 
     let frame = 0;
@@ -29,14 +29,6 @@ export function kal() {
     };
     step(0);
 
-}
-
-export function kalSide(sides){
-    effectParams.kaleidoscope.side = sides
-}
-
-export function kalSize(size){
-    effectParams.kaleidoscope.size = size
 }
 
 export function noEffect(){
@@ -55,4 +47,10 @@ function swapCanvas(){
         processed.style.zIndex = 0;
     }
     processCanvas = !processCanvas
+}
+
+
+export function setEffect(effect, at, val){
+    effectParams[effect][at] = val
+    console.log(effectParams[effect][at])
 }

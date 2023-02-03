@@ -2,7 +2,7 @@ import * as parser from "./public/grammar.js";
 import * as shape from "./public/functions/shapes.js"
 import * as style from "./public/functions/styles.js"
 import * as graph from "./public/paramContainer.js"
-import { kal, noEffect } from "./public/functions/processing.js";
+import { kal, noEffect, setEffect} from "./public/functions/processing.js";
 import { input } from "@bandaloo/merge-pass";
 
 let gl, framebuffer, simulationProgram, drawProgram,
@@ -619,6 +619,7 @@ function runSelected(cm) {
     var parsedCode = parser.parse(text)
     console.log(parsedCode);
     flash(cm, pos)
+
     eval("(" + parsedCode + ")");
 }
 

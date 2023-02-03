@@ -84,10 +84,14 @@ colorA = "colorA(" h:hex ")"{ return `colorA(${h})` ; } // change to be an equal
 colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
 
 /** Post Processing **/
-effects = noEffect / kalSize / kalSide / kal 
+effects = editAttribute / noEffect / effect
+postProcess = "kal" 
+attribute = "size" / "side" 
+
 
 noEffect = "noEffect"{ return `noEffect()` }
+effect = func:postProcess _ { return `${func}()`} 
+effectAttribute = attr:attribute { return `${attr}` }
 
-kal "kal"= "kal"{ return `kal()`;}
-kalSide = POINT "side(" side:primary ")"{ return `kalSide(${side})`}
-kalSize = POINT "size(" size:primary ")"{ return `kalSize(${size})`}
+
+editAttribute = e:postProcess POINT att:effectAttribute "(" val:primary ")"{ return `setEffect('${e}', '${att}', ${val})`}
