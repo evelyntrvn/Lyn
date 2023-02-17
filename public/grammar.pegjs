@@ -85,12 +85,12 @@ colorB = "colorB(" h:hex ")"{ return `colorB(${h})` ; }
 
 /** Post Processing **/
 effects = editAttribute / noEffect / effect
-postProcess = "kal" 
+postProcess = "kal" / "blur" / "celShade" / "foggy" / "light" / "noise" / "oldFilm" / "vignette"
 attribute = "size" / "side" 
 
 
 noEffect = "noEffect"{ return `noEffect()` }
-effect = func:postProcess _ { return `${func}()`} 
+effect = func:postProcess _ { return `postEffect("${func}")`} 
 effectAttribute = attr:attribute { return `${attr}` }
 
 
