@@ -1,0 +1,240 @@
+<head>   <script type="module" crossorigin src="/Lyn/assets/index-af7d2978.js"></script>
+   <link rel="stylesheet" href="/Lyn/assets/index-ce97c6e6.css">
+ </head>
+
+<body>
+  <div id="loading">
+    <div class="loading-container">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  
+  <div id="infoContainer">
+    <div class="iconContainer">
+      <img id="shuffleIcon" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACZklEQVRIia2UMUjVURTGv/PnYRIiDQ8JaSgHCQqJCJFwcoiGiIiGEBVaQ2hxaKghKhqioUAkqCkaGhuiISKaGmrREIoIlxyiwSwa8un3a3j3X5e/z6fB++DB/Z937/ed+91zjtQB2B4DPgIngU5QbhK4SBM/gRnbtfK/miQB+yTVU2xd0ndJXyKiLTGwR9I+SQdSqEfS7Yg4BFyKiB8CZoCGbWwDkNZvgeEtMq4DD203sv352fL8oIBPbI1l4Ggl6x7geZszOeYFPKlmkcP2PNCdCVwDNlplXVmvAuMB9Eg6L6lPUiFpFzAhaX9ECFBE3JB0VdIQ8FZSV9Jbi4gHwICkk2USEfEBmCyK4l2rhxMwVvqbsAIcBF5ULjgLFLan0/dGsm9v2+pIQvczmwBmbW9kVizTrCLZngIawC1g97bkSaAOvLL9C3ht+1vmbwM4n+2tpRvuiDsX2Q30A3OVh38GdG3PsAPYHrL9O+P/aftIR8iBbtuv8hIEbv63FW0EplJllAJLQG9HyG33JcISDWAc6AIGgL8DDShS7L8E5kpbkjXPgLrtxRR/Q7NJBUykvrlO1vXtyEeB/GFXgSHgTKWa7rRotKdAOZlVS4pnJfVLKoBaRFzQv3EgSfckLUhaA9YjorRnWlIREQM0R0oh6TTwEpiMiAUBjypWVNeL+bVt38pGcqv95W8FOCfgM1vjKzCS2wf0snkmbYV5AZdpVkh1XL8HRlu9EdAHPLKdlzCV9bztwwJke8D2CHAcGLY9yA5Kznbd9jHgbqUZH9vesy3BTlFWURqMV+jUnMoETthesn2qevM/nx0oLITLwQ4AAAAASUVORK5CYII=" />
+      <img id="helpIcon" class="icon" src="data:image/png;base64,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" />
+    </div>
+  </div>
+
+  <!-- POPUPS -->
+  <div class="popup" id="helpPopup">
+    <h1>Command List</h1>
+
+    <!-- TABS -->
+    <div class="tab-header">
+      <div class="active-tab">
+        <i class="ref-tab"></i> Simulation
+      </div>
+      <div >
+        <i class="ref-tab"></i> Audio
+      </div>
+      <div>
+        <i class="ref-tab"></i> Effects
+        <p>kal   // creates kaleidoscope effect</p>
+        <p>celShade // creates ___ effect</p>
+      </div>
+    </div>
+
+    <div class="tab-indicator"></div>
+    <div class="tab-body">
+
+      <div class="active-tab">
+        <h2>Simulations</h2>
+        <list>
+          <li>diffuse(boolean): set the diffuse function on or false</li>
+        </list>
+      </div>
+      
+
+      <div>
+        <h2>Audio</h2>
+        <input type="file" class="audio-input"></input>
+        <input type="file" class="audio-input"></input>
+        <input type="file" class="audio-input"></input>
+      </div>
+
+      <div>
+        <h2>Effects</h2>
+        <list>
+          <li>diffuse(boolean): set the diffuse function on or false</li>
+        </list>
+      </div>
+
+    </div>
+
+   
+  </div>
+  <div class="overlay" id="popupContainer">
+  </div>
+
+  <div id="editor"></div>
+  <canvas id="gl"></canvas>
+
+  <audio src="./public/audio/tokyo_tea.mp3"></audio>
+
+  <div id="paramContainer">
+    <button id='paramB' class="collapsible">Parameters</button>
+
+    <div class="paramContent" id="textParams"></div>
+    <div class="paramContent" id="graphParams"></div>
+  </div>
+
+  <canvas id="processed"></canvas>
+</body>
+
+
+
+<script src="https://unpkg.com/codemirror@5.65.9/lib/codemirror.js"></script>
+<script src="https://unpkg.com/codemirror-colorpicker@1.9.80/dist/codemirror-colorpicker.js"></script>
+
+<script src="https://d3js.org/d3.v4.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/codemirror@5.65.9/lib/codemirror.css"/>
+<link rel="stylesheet" href="https://unpkg.com/codemirror-colorpicker@1.9.80/dist/codemirror-colorpicker.css" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/tweakpane@3.0.7/dist/tweakpane.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peggy"></script>
+
+<!-- vertex shader, as simple as possible - -->
+<script id="vertex" type="x-shader/x-vertex">
+  attribute vec2 a_position;
+
+  void main() {
+    gl_Position = vec4( a_position, 0, 1 );
+  }
+</script>
+
+<script id="simulation" type="x-shader/x-fragment">
+  #ifdef GL_ES
+      precision mediump float;
+  #endif
+
+  uniform float time;
+  uniform vec2 resolution;
+  uniform float dA;
+  uniform float dB;
+  uniform float feed;
+  uniform float kill;
+  uniform float size;
+  uniform float audioData;
+  uniform bool diffuse; 
+  uniform bool automata;
+
+  // simulation texture state, swapped each frame
+  uniform sampler2D state;
+
+  // get each cell rgb
+  vec3 get(int x, int y) {
+    return vec3(
+      texture2D( state, ( gl_FragCoord.xy + vec2(x, y) ) / resolution ).rgb
+    );
+  }
+
+  // get prev state
+  vec4 getPrev() {
+    return texture2D( state, ( gl_FragCoord.xy ) / resolution );
+  }
+
+  vec3 laplace(){
+    vec3 sum = vec3(0., 0., 0.);
+
+    sum = get(-1, -1) * 0.05
+        + get( 0, -1) * 0.2
+        + get( 1, -1) * 0.05
+        + get(-1, 0) * 0.2
+        - get( 0, 0)
+        + get( 1, 0) * 0.2
+        + get(-1 , 1) * 0.05
+        + get( 0, 1) * 0.2
+        + get( 1, 1) * 0.05;
+
+    return sum;
+  }
+
+  vec4 dif(){
+    float a = get(0, 0).r;
+    float b = get(0, 0).g;
+    vec3 lp = laplace();
+
+    float reaction = a*b*b;
+
+    float a2 = a + (dA * lp.x - reaction + feed * (1. - a));
+    float b2 = b + (dB * lp.y + reaction - (kill + feed) * b);
+
+    vec4 result = vec4(a2, b2, audioData, 1.);
+    return result;
+  }
+
+  vec4 auto(){
+    vec4 result = vec4(0.);
+    
+    float sum = get(-1, -1).g +
+              get(-1,  0).g +
+              get(-1,  1).g +
+              get( 0, -1).g +
+              get( 0,  1).g +
+              get( 1, -1).g +
+              get( 1,  0).g +
+              get( 1,  1).g;
+
+    if (sum == 3.) {
+      result = vec4( 1., 0., 0., 1. );
+    } else if (sum == 2.) {
+      result = vec4( get(0, 0), 1. );
+    } else {
+      result = vec4( 0., 1., 0., 1. );
+    }
+    return result;
+  }
+
+  void main() {
+    vec4 result = getPrev();
+
+    if (diffuse){
+      result = dif();
+    }else if (automata){
+      result = auto();
+    }else{
+      result = getPrev();
+    }
+
+    gl_FragColor = result;
+  }
+</script>
+
+<!-- render to screen shader -->
+<script id="render" type="x-shader/x-fragment">
+  #ifdef GL_ES
+  precision mediump float;
+  #endif
+
+  uniform sampler2D uSampler;
+  uniform vec2 resolution;
+  uniform vec3 colA;
+  uniform vec3 colB;
+
+  vec4 grayscale(){
+    vec4 cur = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+    float gray = (cur.r*0.21 + cur.g*0.71 + cur.b*0.07);
+    float colorFactor = 1.;
+
+    return vec4(cur.rgb * (1. - colorFactor) + gray * colorFactor, cur.a);
+  }
+
+  vec4 colorscale(vec3 colA, vec3 colB){
+    vec4 cur = vec4( texture2D( uSampler, gl_FragCoord.xy / resolution ).rgb, 1. );
+    vec3 a = colA * cur.r;
+    vec3 b = colB * cur.g;
+
+    return vec4( a + b, cur.a );
+  }
+
+  void main() {
+    gl_FragColor = colorscale(colA, colB); //grayscale();
+  }
+</script>
+
+
