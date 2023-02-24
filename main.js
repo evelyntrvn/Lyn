@@ -33,6 +33,9 @@ const presets = [
 let prevShuffle = -1;
 
 window.onload = function () {
+    document.getElementById('infoContainer').style.visibility = "visible"
+    document.getElementById('paramContainer').style.visibility = "visible"
+    document.getElementById('paramB').style.visibility = "visible"
     document.getElementById('loading').style.display = 'none'
     navigator.mediaDevices
         .getUserMedia({ audio: true, video: false })

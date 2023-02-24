@@ -40,6 +40,7 @@ canvas {
 /* TOP BAR */
 
 #infoContainer {
+  visibility: hidden;
   position: absolute;
   z-index: 1;
   width: 100%;
@@ -259,6 +260,7 @@ canvas {
 /* PARAM INFO */
 
 #paramContainer {
+  visibility: hidden;
   background-color: rgba(0, 0, 0, 0.41);
   position: absolute;
   bottom: 0;
@@ -278,6 +280,7 @@ canvas {
 }
 
 .collapsible {
+  visibility: hidden;
   z-index: 3;
   background-color: rgba(0, 0, 0, 0.736);
   color: white;

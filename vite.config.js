@@ -1,5 +1,11 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    base: '/Lyn/'
+    base: '/Lyn/',
+    build:{
+        commonjsOptions: {include: []}
+    },
+    optimizeDeps: {
+        disabled: false
+    }
 })
