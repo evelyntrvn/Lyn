@@ -1,6 +1,6 @@
 import * as parser from "./public/grammar.js";
 import * as shape from "./public/functions/shapes.js"
-import * as style from "./public/functions/styles.js"
+import * as col from "./public/functions/color.js"
 import * as graph from "./public/paramContainer.js"
 import { postEffect, noEffect, setEffect} from "./public/functions/processing.js";
 import { input } from "@bandaloo/merge-pass";
@@ -11,7 +11,7 @@ let gl, framebuffer, simulationProgram, drawProgram,
     textureBack, textureFront,
     dimensions = { width: null, height: null },
     diffuse = false, automata = false,
-    colA = style.color("#e6c457"), colB = style.color("#9257e6"),
+    colA = col.getColor("A"), colB = col.getColor("B"),
     audio, audioData, bufferLength, analyser, audioContext, audioElement,
     uVar = {
         dA: [1.0, false, 0, 1],
@@ -33,6 +33,7 @@ const presets = [
 let prevShuffle = -1;
 
 window.onload = function () {
+    document.getElementById('loading').style.display = 'none'
     navigator.mediaDevices
         .getUserMedia({ audio: true, video: false })
         .then(function (stream) {
@@ -68,8 +69,8 @@ window.onload = function () {
     const canvas = document.getElementById("gl"),
         processed = document.getElementById("processed");
     gl = canvas.getContext("webgl");
-    width = canvas.width = processed.width = dimensions.width = window.innerWidth;
-    height = canvas.height = processed.height = dimensions.height = window.innerHeight;
+    width = canvas.width = processed.width = dimensions.width = document.body.clientWidth;
+    height = canvas.height = processed.height = dimensions.height = document.body.clientHeight;
 
     // define drawing area of webgl canvas. bottom corner, width / height
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -115,7 +116,8 @@ playMusic(1)`,
         tabHeader = document.getElementsByClassName('tab-header')[0],
         tabIndicator = document.getElementsByClassName('tab-indicator')[0],
         tabBody = document.getElementsByClassName('tab-body')[0],
-        tabs = tabHeader.getElementsByTagName('div');
+        tabs = tabHeader.getElementsByTagName('div'),
+        paramB = document.getElementById('paramB');
 
     helpIcon.addEventListener("click", (e) => {
         let popup = document.getElementById('helpPopup')
@@ -165,6 +167,19 @@ playMusic(1)`,
             tabIndicator.style.left = `calc(calc(100% / 3) * ${i})`;
         })
     }
+
+    paramB.addEventListener('click', (e) =>{
+        var paramContent = document.getElementsByClassName('paramContent')
+        console.log("click")
+
+        for (var i = 0; i < paramContent.length; i++){
+            if (paramContent[i].style.display === "none"){
+                paramContent[i].style.display = "block"
+            }else{
+                paramContent[i].style.display = "none"
+            }
+        }
+    })
 
     paramInfo();
 };
@@ -453,12 +468,12 @@ function getK(c) {
 }
 
 function colorA(hex) {
-    colA = style.color(hex)
+    colA = color.color(hex)
     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
 }
 
 function colorB(hex) {
-    colB = style.color(hex)
+    colB = color.color(hex)
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 }
 

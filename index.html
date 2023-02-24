@@ -1,7 +1,7 @@
 <head> </head>
 
 <body>
-  <div class="loading">
+  <div id="loading">
     <div class="loading-container">
       <div></div>
       <div></div>
@@ -74,10 +74,10 @@
   <audio src="./public/audio/tokyo_tea.mp3"></audio>
 
   <div id="paramContainer">
-    <button class="collapsible">Parameters Info</button>
+    <button id='paramB' class="collapsible">Parameters</button>
 
-    <div id="textParams"></div>
-    <div id="graphParams"></div>
+    <div class="paramContent" id="textParams"></div>
+    <div class="paramContent" id="graphParams"></div>
   </div>
 
   <canvas id="processed"></canvas>
