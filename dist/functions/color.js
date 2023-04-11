@@ -15,11 +15,14 @@ export function setColor(col, color){
     }else {
         c = hexToRgb(convert.keyword.hex(color))
     }
+    console.log(c)
+
 
     colors[col] = c;
 }
 
 export function getColor(col){
+    // console.log(colors[col])
     return colors[col]
 }
 
