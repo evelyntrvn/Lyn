@@ -418,6 +418,9 @@ function render() {
 
     time++;
 
+    colA = col.getColor("A")
+    colB = col.getColor("B")
+
     gl.uniform1f(uTime, time);
     gl.uniform1f(uDA, uVar.dA[0]);
     gl.uniform1f(uDB, uVar.dB[0]);
@@ -426,6 +429,9 @@ function render() {
     gl.uniform1f(uDiffuse, diffuse);
     gl.uniform1f(uAutomata, automata);
     gl.uniform1f(uAudio, audioData);
+    gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+    gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
+
 
      //update param text
     if (time % 100 === 0) {
@@ -470,15 +476,14 @@ function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
 
-function colorA(hex) {
-    colA = color.color(hex)
-    gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
-}
+// function colorA(hex) {
+//     colA = color.getColor("A")
+//     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+// }
 
-function colorB(hex) {
-    colB = color.color(hex)
-    gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
-}
+// function colorB(hex) {
+//     colB = color.color(hex)
+// }
 
 /**********SHAPE FUNCTIONS ********/
 
