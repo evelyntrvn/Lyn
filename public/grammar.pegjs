@@ -28,7 +28,7 @@ _ "whitespace" = [ \t\n\r]*
 /****** Key Words ******/
 keyword "keyword" = col / difFct / cellFct / 
                     effects /reset / music / audio / time / rect /
-					     rateA / rateB / feed / kill / wait / primary /
+					     wait / primary /
                     hex  / $[^{} \t\n\r] +
 
 // Input and other

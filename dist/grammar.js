@@ -848,51 +848,39 @@ function peg$parse(input, options) {
                   if (s0 === peg$FAILED) {
                     s0 = peg$parserect();
                     if (s0 === peg$FAILED) {
-                      s0 = peg$parserateA();
+                      s0 = peg$parsewait();
                       if (s0 === peg$FAILED) {
-                        s0 = peg$parserateB();
+                        s0 = peg$parseprimary();
                         if (s0 === peg$FAILED) {
-                          s0 = peg$parsefeed();
+                          s0 = peg$parsehex();
                           if (s0 === peg$FAILED) {
-                            s0 = peg$parsekill();
-                            if (s0 === peg$FAILED) {
-                              s0 = peg$parsewait();
-                              if (s0 === peg$FAILED) {
-                                s0 = peg$parseprimary();
-                                if (s0 === peg$FAILED) {
-                                  s0 = peg$parsehex();
-                                  if (s0 === peg$FAILED) {
-                                    s0 = peg$currPos;
-                                    s1 = [];
-                                    if (peg$r4.test(input.charAt(peg$currPos))) {
-                                      s2 = input.charAt(peg$currPos);
-                                      peg$currPos++;
-                                    } else {
-                                      s2 = peg$FAILED;
-                                      if (peg$silentFails === 0) { peg$fail(peg$e16); }
-                                    }
-                                    if (s2 !== peg$FAILED) {
-                                      while (s2 !== peg$FAILED) {
-                                        s1.push(s2);
-                                        if (peg$r4.test(input.charAt(peg$currPos))) {
-                                          s2 = input.charAt(peg$currPos);
-                                          peg$currPos++;
-                                        } else {
-                                          s2 = peg$FAILED;
-                                          if (peg$silentFails === 0) { peg$fail(peg$e16); }
-                                        }
-                                      }
-                                    } else {
-                                      s1 = peg$FAILED;
-                                    }
-                                    if (s1 !== peg$FAILED) {
-                                      s0 = input.substring(s0, peg$currPos);
-                                    } else {
-                                      s0 = s1;
-                                    }
-                                  }
+                            s0 = peg$currPos;
+                            s1 = [];
+                            if (peg$r4.test(input.charAt(peg$currPos))) {
+                              s2 = input.charAt(peg$currPos);
+                              peg$currPos++;
+                            } else {
+                              s2 = peg$FAILED;
+                              if (peg$silentFails === 0) { peg$fail(peg$e16); }
+                            }
+                            if (s2 !== peg$FAILED) {
+                              while (s2 !== peg$FAILED) {
+                                s1.push(s2);
+                                if (peg$r4.test(input.charAt(peg$currPos))) {
+                                  s2 = input.charAt(peg$currPos);
+                                  peg$currPos++;
+                                } else {
+                                  s2 = peg$FAILED;
+                                  if (peg$silentFails === 0) { peg$fail(peg$e16); }
                                 }
                               }
+                            } else {
+                              s1 = peg$FAILED;
+                            }
+                            if (s1 !== peg$FAILED) {
+                              s0 = input.substring(s0, peg$currPos);
+                            } else {
+                              s0 = s1;
                             }
                           }
                         }
