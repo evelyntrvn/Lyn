@@ -22,7 +22,6 @@ export function setColor(col, color){
 }
 
 export function getColor(col){
-    // console.log(colors[col])
     return colors[col]
 }
 
