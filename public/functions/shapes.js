@@ -2,14 +2,11 @@
 
 import poking from "../../main.js"
 
-export function start() {
+
+export function fill() { 
     for (var i = 0; i < window.innerWidth; i++) {
         for (var j = 0; j < window.innerHeight; j++) {
-            if (i % 500 === 0 && j % 500 === 0) {
-                poking(i, j, 0, 0, 255);
-            } else {
-                poking(i, j, 255, 0, 0);
-            }
+            poking(i, j, 255, 0, 0);
         }
     }
 }
@@ -23,9 +20,10 @@ export function rect(x, y, w, h) {    // TODO: Fix coordinates
                 j <= y + h && j >= y
             ) {
                 poking(i, j, 0, 255, 0);
-            } else {
-                poking(i, j, 255, 0, 0);
-            }
+            } 
+            // else {
+            //     poking(i, j, 255, 0, 0);
+            // }
         }
     }
     console.log("rect")

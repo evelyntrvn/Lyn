@@ -216,7 +216,17 @@ var poking = function poking(x, y, r, g, b) {
     poke(x, y, r, g, b, textureBack)
 }
 
+// function fill(){
+//     // gl.bindTexture(gl.TEXTURE_2D, textureBack);
+//     gl.texImage2D(
+//         gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0,  gl.RGBA, gl.UNSIGNED_BYTE,  
+//         new Uint8Array([255, 0, 0, 255])
+//     );
+// }
+
 function setInitialState() {
+    
+
     gl.uniform1f(uDA, uVar.dA[0]);
     gl.uniform1f(uDB, uVar.dB[0]);
     gl.uniform1f(uFeed, uVar.f[0]);
@@ -224,7 +234,7 @@ function setInitialState() {
 
     var x = width / 2,
         y = height / 2;
-
+    shape.fill();
     // for (var i = 0; i < width; i++) {
     //     for (var j = 0; j < height; j++) {
     //         if (Math.random() > .75) {
@@ -234,6 +244,7 @@ function setInitialState() {
     //         }
     //     }
     // }
+
     shape.rect(x, y, 100, 100);
 
 }
@@ -473,15 +484,6 @@ function map(value, min1, max1, min2, max2) {
 function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
-
-// function colorA(hex) {
-//     colA = color.getColor("A")
-//     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
-// }
-
-// function colorB(hex) {
-//     colB = color.color(hex)
-// }
 
 /**********SHAPE FUNCTIONS ********/
 
