@@ -1,8 +1,8 @@
 import * as convert from "color-convert"
 
 var colors = {
-    "A": color("#090326"),
-    "B": color("#C33E3E")
+    "A": color("#385F71"),
+    "B": color("#fcba04")
 }
 
 

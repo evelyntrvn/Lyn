@@ -29,14 +29,16 @@ audio = "audio" {return "'audio'"}
 //    "if" expr "then" sentence  // conditional statement, what to return?
 
 /****** Key Words ******/
-keyword "keyword" = rect / col / difFct / cellFct / 
+keyword "keyword" = col / difFct / cellFct / 
                     effects / reset / music / 
-					     wait /
+					     wait / shapes /
                     hex  / $[^{} \t\n\r] +
 
 // Shapes and styles
+shapes = rect / dots
 //circle = "circle" { return "@circle"; }
 rect = "rect(" _? x:PRIMARY "," _? y:PRIMARY "," _? w:PRIMARY "," _? h:PRIMARY ")"{ return `shape.rect( ${x}, ${y}, ${w}, ${h} )`}
+dots = "dots()"{ return `shape.dots()`}
 
 // triangle = "triangle" { return "@triangle"; }
 // ellipse = "ellipse" { return "@ellipse"; }
@@ -68,7 +70,7 @@ automata  = "automata(" bool:boolean ")"{ return `setAutomata(${bool})`;}
 /***** music ****/
 music = playMusic / pauseMusic / time
 playMusic = "playMusic(" trackNum:int ")" { return `playMusic(${trackNum})` }
-pauseMusic = "pauseMusic" { return `pauseMusic()` } 
+pauseMusic = "pauseMusic()" { return `pauseMusic()` } 
 
 // Input and other
 time = "time" { return Date.getTime; }

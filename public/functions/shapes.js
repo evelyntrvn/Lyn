@@ -11,6 +11,15 @@ export function fill() {
     }
 }
 
+export function dots(){
+    for (var i = 0; i < window.innerWidth; i++) {
+        for (var j = 0; j < window.innerHeight; j++) {
+            if (Math.random() > .90) {
+                poking(i, j, 0, 255, 0)
+            }
+        }
+    }
+}
 
 export function rect(x, y, w, h) {    // TODO: Fix coordinates 
     for (var i = 0; i < window.innerWidth; i++) {
