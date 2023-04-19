@@ -1,4 +1,4 @@
-<head>   <script type="module" crossorigin src="/Lyn/assets/index-5494d59f.js"></script>
+<head>   <script type="module" crossorigin src="/Lyn/assets/index-57bfe326.js"></script>
    <link rel="stylesheet" href="/Lyn/assets/index-5e9d1e18.css">
  </head>
 
@@ -165,8 +165,9 @@
 
   vec4 auto(){
     vec4 result = vec4(0.);
-    
-    float sum = get(-1, -1).g +
+    float state = get(0,0).g;     //current state
+
+    float neighbor = get(-1, -1).g + // neighbor count
               get(-1,  0).g +
               get(-1,  1).g +
               get( 0, -1).g +
@@ -175,12 +176,12 @@
               get( 1,  0).g +
               get( 1,  1).g;
 
-    if (sum == 3.) {
+    if (state == 0. && neighbor == 3.){  //lonely and dies
+      result = vec4( 0., 1., 0., 1.);
+    }else if (state == 1. && (neighbor < 2. || neighbor > 3.)) {
       result = vec4( 1., 0., 0., 1. );
-    } else if (sum == 2.) {
-      result = vec4( get(0, 0), 1. );
     } else {
-      result = vec4( 0., 1., 0., 1. );
+      result = vec4( get(0,0), 1. );
     }
     return result;
   }
