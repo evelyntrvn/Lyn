@@ -1,8 +1,14 @@
-import * as parser from "./public/grammar.js";
-import * as shape from "./public/functions/shapes.js"
-import * as col from "./public/functions/color.js"
-import * as graph from "./public/paramContainer.js"
-import { postEffect, noEffect, setEffect} from "./public/functions/processing.js";
+import * as Parser from "./public/grammar.js";
+import * as Shape from "./public/functions/shapes.js"
+import * as Col from "./public/functions/color.js"
+import * as Graph from "./public/paramContainer.js"
+import * as Effects from "./public/functions/processing.js";
+ 
+var shape = Shape,
+    parser = Parser,
+    col = Col,
+    graph = Graph,
+    effects = Effects;
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -22,6 +28,8 @@ let gl, framebuffer, simulationProgram, drawProgram,
     mic = false,
     width, height,
     previous_time = 0;
+
+ 
 
 const presets = [
     { dA: 1, dB: 0.2, f: 0.029, k: 0.057 },
@@ -75,7 +83,6 @@ window.onload = function () {
     width = canvas.width = processed.width = dimensions.width = document.body.clientWidth;
     height = canvas.height = processed.height = dimensions.height = document.body.clientHeight;
 
-    // define drawing area of webgl canvas. bottom corner, width / height
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     makeBuffer();
@@ -211,14 +218,6 @@ var poking = function poking(x, y, r, g, b) {
     poke(x, y, r, g, b, textureBack)
 }
 
-// function fill(){
-//     // gl.bindTexture(gl.TEXTURE_2D, textureBack);
-//     gl.texImage2D(
-//         gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0,  gl.RGBA, gl.UNSIGNED_BYTE,  
-//         new Uint8Array([255, 0, 0, 255])
-//     );
-// }
-
 function setInitialState() {
 
 
@@ -278,15 +277,8 @@ function makeShaders() {
     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 
-
-
-    // get position attribute location in shader
     let position = gl.getAttribLocation(drawProgram, 'a_position')
-    // enable the attribute
     gl.enableVertexAttribArray(position)
-    // this will point to the vertices in the last bound array buffer.
-    // In this example, we only use one array buffer, where we're storing 
-    // our vertices
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
 
     shaderScript = document.getElementById('simulation')
@@ -489,8 +481,8 @@ function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
 
-/**********SHAPE FUNCTIONS ********/
 
+// TODO: need to parse the text then wait
 function wait(milliseconds) {
 
 

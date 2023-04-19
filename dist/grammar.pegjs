@@ -93,9 +93,9 @@ postProcess = "kal" / "blur" / "celShade" / "foggy" / "light" / "noise" / "oldFi
 attribute = "size" / "side" 
 
 
-noEffect = "noEffect"{ return `noEffect()` }
-effect = func:postProcess _ { return `postEffect("${func}")`} 
+noEffect = "noEffect"{ return `effects.noEffect()` }
+effect = func:postProcess _ { return `effects.postEffect("${func}")`} 
 effectAttribute = attr:attribute { return `${attr}` }
 
 
-editAttribute = e:postProcess POINT att:effectAttribute "(" val:PRIMARY ")"{ return `setEffect('${e}', '${att}', ${val})`}
+editAttribute = e:postProcess POINT att:effectAttribute "(" val:PRIMARY ")"{ return `effects.setEffect('${e}', '${att}', ${val})`}

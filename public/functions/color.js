@@ -19,7 +19,6 @@ export function setColor(col, color){
     }
     console.log(c)
 
-
     colors[col] = c;
 }
 

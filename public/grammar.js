@@ -298,10 +298,10 @@ function peg$parse(input, options) {
   var peg$f25 = function() { return text();};
   var peg$f26 = function(h) { return `col.setColor( "A", ${h} )` ; };
   var peg$f27 = function(h) { return `col.setColor("B", ${h})` ; };
-  var peg$f28 = function() { return `noEffect()` };
-  var peg$f29 = function(func) { return `postEffect("${func}")`};
+  var peg$f28 = function() { return `effects.noEffect()` };
+  var peg$f29 = function(func) { return `effects.postEffect("${func}")`};
   var peg$f30 = function(attr) { return `${attr}` };
-  var peg$f31 = function(e, att, val) { return `setEffect('${e}', '${att}', ${val})`};
+  var peg$f31 = function(e, att, val) { return `effects.setEffect('${e}', '${att}', ${val})`};
   var peg$currPos = 0;
   var peg$savedPos = 0;
   var peg$posDetailsCache = [{ line: 1, column: 1 }];
