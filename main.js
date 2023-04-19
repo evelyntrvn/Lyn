@@ -2,6 +2,7 @@ import * as parser from "./public/grammar.js";
 import * as shape from "./public/functions/shapes.js"
 import * as col from "./public/functions/color.js"
 import * as graph from "./public/paramContainer.js"
+import { postEffect, noEffect, setEffect} from "./public/functions/processing.js";
 
 let gl, framebuffer, simulationProgram, drawProgram,
     uTime, uSimulationState, uRes, uAudio, uDA, uDB,
@@ -19,12 +20,13 @@ let gl, framebuffer, simulationProgram, drawProgram,
     }, // [value, ifAudio, min, max]
     playing = false,
     mic = false,
-    width, height;
+    width, height,
+    previous_time = 0;
 
 const presets = [
     { dA: 1, dB: 0.2, f: 0.029, k: 0.057 },
     { dA: 0.21, dB: 0.105, f: 0.022, k: 0.049 },
-    { dA: 0.21, dB: 0.13, f: 0.041, k: 0.059 },
+    // { dA: 0.21, dB: 0.13, f: 0.041, k: 0.059 },
     { dA: 0.21, dB: 0.105, f: 0.015, k: 0.049 },
     { dA: 0.21, dB: 0.105, f: 0.049, k: 0.061 }
 ]
@@ -82,18 +84,11 @@ window.onload = function () {
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value:
-            `feed(0.029)
-kill(audio)
-rateA(1)
-rateB(0.2)
-diffuse(true)
-            
-playMusic(1)`,
+        value:``,
         mode: "javascript",
         lineNumbers: true,
-        colorpicker : {
-            mode : 'edit',
+        colorpicker: {
+            mode: 'edit',
             type: 'mini',
             outputFormat: 'hex', //doesn't work
         }
@@ -169,14 +164,14 @@ playMusic(1)`,
         })
     }
 
-    paramB.addEventListener('click', (e) =>{
+    paramB.addEventListener('click', (e) => {
         var paramContent = document.getElementsByClassName('paramContent')
         console.log("click")
 
-        for (var i = 0; i < paramContent.length; i++){
-            if (paramContent[i].style.display === "none"){
+        for (var i = 0; i < paramContent.length; i++) {
+            if (paramContent[i].style.display === "none") {
                 paramContent[i].style.display = "block"
-            }else{
+            } else {
                 paramContent[i].style.display = "none"
             }
         }
@@ -216,26 +211,23 @@ var poking = function poking(x, y, r, g, b) {
     poke(x, y, r, g, b, textureBack)
 }
 
+// function fill(){
+//     // gl.bindTexture(gl.TEXTURE_2D, textureBack);
+//     gl.texImage2D(
+//         gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0,  gl.RGBA, gl.UNSIGNED_BYTE,  
+//         new Uint8Array([255, 0, 0, 255])
+//     );
+// }
+
 function setInitialState() {
+
+
     gl.uniform1f(uDA, uVar.dA[0]);
     gl.uniform1f(uDB, uVar.dB[0]);
     gl.uniform1f(uFeed, uVar.f[0]);
     gl.uniform1f(uKill, uVar.k[0]);
 
-    var x = width / 2,
-        y = height / 2;
-
-    // for (var i = 0; i < width; i++) {
-    //     for (var j = 0; j < height; j++) {
-    //         if (Math.random() > .75) {
-    //             poke(i, j, 0, 255, 0, textureBack)
-    //         } else {
-    //             poke(i, j, 255, 0, 0, textureBack)
-    //         }
-    //     }
-    // }
-    shape.rect(x, y, 100, 100);
-
+    shape.fill();
 }
 
 function makeBuffer() {
@@ -263,10 +255,10 @@ function makeShaders() {
     gl.compileShader(vertexShader)
 
     // create fragment shader
-    shaderScript = document.getElementById('render')
-    shaderSource = shaderScript.text
+    let shaderScript2 = document.getElementById('render')
+    let shaderSource2 = shaderScript2.text
     const drawFragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-    gl.shaderSource(drawFragmentShader, shaderSource)
+    gl.shaderSource(drawFragmentShader, shaderSource2)
     gl.compileShader(drawFragmentShader)
     console.log(gl.getShaderInfoLog(drawFragmentShader))
 
@@ -431,7 +423,7 @@ function render() {
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 
 
-     //update param text
+    //update param text
     if (time % 100 === 0) {
         paramInfo()
         graph.update(uVar, time);
@@ -455,16 +447,39 @@ function render() {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);                         // run shader
 
-    let tmp = textureFront;                                    // swap our front and back textures
-    textureFront = textureBack;
-    textureBack = tmp;
+    if (automata) {
+        var now = Date.now();
+        var frame_rate = 100;
+        var elapsed_time = now - previous_time;
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);                   // use the default framebuffer object by passing null
-    gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
-    gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
-    gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
-    gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
+        if (elapsed_time >= frame_rate) {
+            let tmp = textureFront;                                    // swap our front and back textures
+            textureFront = textureBack;
+            textureBack = tmp;
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);                   // use the default framebuffer object by passing null
+            gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
+            gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
+            gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
+            gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
+
+            // Remember when this scene was rendered.
+            previous_time = now;
+        }
+
+    } else {
+        let tmp = textureFront;                                    // swap our front and back textures
+        textureFront = textureBack;
+        textureBack = tmp;
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);                   // use the default framebuffer object by passing null
+        gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
+        gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
+        gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
+        gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
+    }
 }
+
 
 function map(value, min1, max1, min2, max2) {
     return min2 + ((value - min1) * (max2 - min2)) / (max1 - min1);
@@ -473,15 +488,6 @@ function map(value, min1, max1, min2, max2) {
 function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
-
-// function colorA(hex) {
-//     colA = color.getColor("A")
-//     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
-// }
-
-// function colorB(hex) {
-//     colB = color.color(hex)
-// }
 
 /**********SHAPE FUNCTIONS ********/
 
