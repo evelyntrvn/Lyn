@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    base: '/',
+    base: '/Lyn/',
     build: {
         minify: false,
         rollupOptions:{
