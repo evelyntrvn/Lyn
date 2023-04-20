@@ -77,8 +77,8 @@ canvas {
   z-index: 4;
   visibility: hidden;
   opacity: 0%;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   background: #d2dde2;
   position: absolute;
   top: 0;
@@ -107,7 +107,7 @@ canvas {
 }
 
 .tab-header > div{
-  width: calc(100%/3);
+  width: calc(100%/5);
   text-align: center;
   cursor: pointer;
   font-weight: 600;
@@ -127,7 +127,7 @@ canvas {
 
 .tab-indicator{
   position: relative;
-  width: calc(100%/3);
+  width: calc(100%/5);
   height: 5px;
   left:0px;
   border-radius: 5px;

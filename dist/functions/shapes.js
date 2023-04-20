@@ -38,19 +38,17 @@ export function rect(x, y, w, h) {    // TODO: Fix coordinates
     console.log("rect")
 }
 
-export function circle(x, y, r) {
-    for (var i = 0; i < width; i++) {
-        for (var j = 0; j < height; j++) {
+// export function circle(x, y, r) {
+//     for (var i = 0; i < window.innerWidth; i++) {
+//         for (var j = 0; j < window.innerHeight; j++) {
 
-            var rad = Math.sqrt(Math.abs(i - x) ^ 2 + Math.abs(j - y))
-            //console.log(rad)
-            if (rad <= r) {
-                poking(i, j, 0, 255);
-            } else {
-                poking(i, j, 255, 0);
-            }
-        }
-    }
-}
+//             var rad = Math.sqrt(Math.abs(i - x) ^ 2 + Math.abs(j - y))
+//             //console.log(rad)
+//             if (rad <= r) {
+//                 poking(i, j, 0, 255);
+//             } 
+//         }
+//     }
+// }
 
 

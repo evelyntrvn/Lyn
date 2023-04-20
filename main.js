@@ -3,7 +3,7 @@ import * as Shape from "./public/functions/shapes.js"
 import * as Col from "./public/functions/color.js"
 import * as Graph from "./public/paramContainer.js"
 import * as Effects from "./public/functions/processing.js";
- 
+
 var shape = Shape,
     parser = Parser,
     col = Col,
@@ -29,12 +29,11 @@ let gl, framebuffer, simulationProgram, drawProgram,
     width, height,
     previous_time = 0;
 
- 
+
 
 const presets = [
     { dA: 1, dB: 0.2, f: 0.029, k: 0.057 },
     { dA: 0.21, dB: 0.105, f: 0.022, k: 0.049 },
-    // { dA: 0.21, dB: 0.13, f: 0.041, k: 0.059 },
     { dA: 0.21, dB: 0.105, f: 0.015, k: 0.049 },
     { dA: 0.21, dB: 0.105, f: 0.049, k: 0.061 }
 ]
@@ -91,7 +90,7 @@ window.onload = function () {
     setInitialState();
 
     const cm = CodeMirror(document.getElementById("editor"), {
-        value:``,
+        value: ``,
         mode: "javascript",
         lineNumbers: true,
         colorpicker: {
@@ -167,7 +166,7 @@ window.onload = function () {
             tabBody.getElementsByClassName('active-tab')[0].classList.remove('active-tab');
             tabBody.getElementsByTagName('div')[i].classList.add('active-tab')
 
-            tabIndicator.style.left = `calc(calc(100% / 3) * ${i})`;
+            tabIndicator.style.left = `calc(calc(100% / 5) * ${i})`;
         })
     }
 
@@ -254,10 +253,10 @@ function makeShaders() {
     gl.compileShader(vertexShader)
 
     // create fragment shader
-    let shaderScript2 = document.getElementById('render')
-    let shaderSource2 = shaderScript2.text
+    shaderScript = document.getElementById('render')
+    shaderSource = shaderScript.text
     const drawFragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-    gl.shaderSource(drawFragmentShader, shaderSource2)
+    gl.shaderSource(drawFragmentShader, shaderSource)
     gl.compileShader(drawFragmentShader)
     console.log(gl.getShaderInfoLog(drawFragmentShader))
 
@@ -273,12 +272,20 @@ function makeShaders() {
     uColA = gl.getUniformLocation(drawProgram, 'colA')
     uColB = gl.getUniformLocation(drawProgram, 'colB')
 
+    colA = col.getColor("A")
+    colB = col.getColor("B")
+
     gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight)
     gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
     gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 
+    // get position attribute location in shader
     let position = gl.getAttribLocation(drawProgram, 'a_position')
+    // enable the attribute
     gl.enableVertexAttribArray(position)
+    // this will point to the vertices in the last bound array buffer.
+    // In this example, we only use one array buffer, where we're storing 
+    // our vertices
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
 
     shaderScript = document.getElementById('simulation')
@@ -399,7 +406,6 @@ function render() {
     }
 
     time++;
-
     colA = col.getColor("A")
     colB = col.getColor("B")
 
@@ -411,14 +417,11 @@ function render() {
     gl.uniform1f(uDiffuse, diffuse);
     gl.uniform1f(uAutomata, automata);
     gl.uniform1f(uAudio, audioData);
-    gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
-    gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
 
-
-    //update param text
     if (time % 100 === 0) {
         paramInfo()
         graph.update(uVar, time);
+        // console.log(gl.uniform3f(uColA, colA[0], colA[1], colA[2]))
     }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -453,6 +456,11 @@ function render() {
             gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
             gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
             gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
+            
+
+            gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+            gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
+
             gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
 
             // Remember when this scene was rendered.
@@ -468,6 +476,10 @@ function render() {
         gl.viewport(0, 0, dimensions.width, dimensions.height);     // set our viewport to be the size of our canvas
         gl.bindTexture(gl.TEXTURE_2D, textureFront);                // select the texture we would like to draw to the screen.
         gl.useProgram(drawProgram);                                 // use our drawing (copy) shader
+
+        gl.uniform3f(uColA, colA[0], colA[1], colA[2]);
+        gl.uniform3f(uColB, colB[0], colB[1], colB[2]);
+
         gl.drawArrays(gl.TRIANGLES, 0, 6);                          // put simulation on screen
     }
 }
@@ -481,14 +493,8 @@ function getK(c) {
     return map(c, 0, 255, 0.045, 0.1);
 }
 
-
-// TODO: need to parse the text then wait
-function wait(milliseconds) {
-
-
-}
-
 function reset() {
+
     setInitialState();
 }
 

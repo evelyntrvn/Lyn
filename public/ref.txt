@@ -1,0 +1,38 @@
+
+
+audio = "audio" {return "'audio'"}
+
+
+// Shapes and styles
+
+reset()                             //reset to blank screen
+rect(xPos, yPos, width, height)     //draw a rectangle 
+dots()                              //draw random dots
+
+/****** simulations attributes ****/
+
+diffuse(true)                       //start reactive diffusion function with true; stop with false
+dA(rateA)                           //set diffusion rate of A; best between 0-1; can set to audio
+dB(rateB)                           //set diffusion rate of B; best between 0-1; can set to audio
+feed(feedRate)                      //set feed rate; best between 0-1; can set to audio
+kill(killRate)                      //set kill rate; best between 0-1; can set to audio
+
+automata(true)                       //start cellular automata function with true; stop with false
+
+
+/****** Audio ****/
+
+playMusic(trackNumber)   Upload an audio file in the Audio tab. The trackNumber corresponds to the audio upload you put the music in (1-3)
+pauseMusic()    Pauses the audio
+
+/** colors **/
+colorA(#ffffff)             //set colorA to the hex code inside
+colorB(#000000)             //set colorB to the hex code inside
+
+/** Post Processing **/
+kal()       adds a kaleidoscope effect
+oldFilm()   adds an old film effect
+noise()     adds a noise effect
+vignette()  adds a vignette effect
+
+noEffect()      clears any effects

@@ -41,6 +41,8 @@ export function postEffect(effect) {
     if (!processCanvas) {
         swapCanvas()
     }
+    gl.clear(gl.COLOR_CLEAR_VALUE);
+
     var merger;
     switch (effect) {
         case "kal":
@@ -132,6 +134,8 @@ export function postEffect(effect) {
 
 export function noEffect() {
     if (processCanvas) {
+        gl.clear(gl.COLOR_CLEAR_VALUE);
+
         swapCanvas()
     }
 }
@@ -152,4 +156,5 @@ function swapCanvas() {
 export function setEffect(effect, at, val) {
     effectParams[effect][at] = val
     console.log(effectParams[effect][at])
+    postEffect(effect)
 }

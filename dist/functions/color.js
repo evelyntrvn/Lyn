@@ -1,14 +1,12 @@
 import * as convert from "color-convert"
 
 var colors = {
-    "A": color("#385F71"),
-    "B": color("#fcba04")
+    "A": color("#370F5E"),
+    "B": color("#9257e6")
 }
 
 
 export function setColor(col, color){
-    console.log(colors[col])
-
     var c 
     if (color.startsWith("rgb")){
         c = hexToRgb(convert.rgb.hex(color))
@@ -17,9 +15,9 @@ export function setColor(col, color){
     }else {
         c = hexToRgb(convert.keyword.hex(color))
     }
-    console.log(c)
 
     colors[col] = c;
+    console.log(colors[col] )
 }
 
 export function getColor(col){

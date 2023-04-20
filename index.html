@@ -25,10 +25,16 @@
     <!-- TABS -->
     <div class="tab-header">
       <div class="active-tab">
+        <i class="ref-tab"></i> Let's Begin!
+      </div>
+      <div>
         <i class="ref-tab"></i> Simulation
       </div>
       <div >
         <i class="ref-tab"></i> Audio
+      </div>
+      <div>
+        <i class="ref-tab"></i> Shapes & Colors
       </div>
       <div>
         <i class="ref-tab"></i> Effects
@@ -39,25 +45,52 @@
     <div class="tab-body">
 
       <div class="active-tab">
-        <h2>Simulations</h2>
-        <list>
-          <li>diffuse(boolean): set the diffuse function on or false</li>
-          <li>automata</li>
-        </list>
+        <h2>Let's Begin</h2>
+  
+          <p>This is Lyn, a live-coding platform based on creating artificial life simulations.</p>
+          <p>To begin, all you have to do is type out your code and then click CTRL + ENTER to run it.</p>
+          <p>To run one line or a selection, click SHIFT + ENTER</p>
       </div>
-      
+
+      <div>
+        <h2>Simulations</h2>
+  
+          <p>diffuse(true)     start reactive diffusion function with true; stop with false</p>
+          <p>dA(rateA)       set diffusion rate of A; best between 0-1; can set to audio</p>
+          <p>dB(rateB)      set diffusion rate of B; best between 0-1; can set to audio</p>
+          <p>feed(feedRate)     set feed rate; best between 0-1; can set to audio</p>
+          <p>kill(killRate)     set kill rate; best between 0-1; can set to audio</p>
+
+          <p>automata(true)     start cellular automata function with true; stop with false</p>
+      </div>
 
       <div>
         <h2>Audio</h2>
-        <input type="file" class="audio-input"></input>
-        <input type="file" class="audio-input"></input>
-        <input type="file" class="audio-input"></input>
+        1 <input type="file" class="audio-input"></input> <br>
+        2 <input type="file" class="audio-input"></input> <br>
+        3 <input type="file" class="audio-input"></input> <br>
+
+        playMusic(trackNumber)   Upload an audio file above; The trackNumber corresponds track above <br> 
+        pauseMusic()    Pauses the audio
+      </div>
+
+      <div>
+        <h2>Shapes & Colors</h2>
+          <p>rect(xPos, yPos, width, height)   draw a rectangle </p>
+          <p>reset()   clears the screen</p><br>
+
+          <p>colorA(#ffffff)  set colorA to the hex code inside</p>
+          <p>colorB(#000000)  set colorB to the hex code inside</p>
+          
       </div>
 
       <div>
         <h2>Effects</h2>
-          <p>kal   // creates kaleidoscope effect</p>
-          <p>celShade // creates ___ effect</p>
+          <p>kal()       adds a kaleidoscope effect</p>
+          <p>oldFilm()   adds an old film effect</p>
+          <p>noise()     adds a noise effect</p>
+          <p>vignette()  adds a vignette effect</p> 
+          <p>noEffect()      clears any effects</p>
       </div>
 
     </div>
@@ -229,12 +262,10 @@
   }
 
   void main() {
+  
     gl_FragColor = colorscale(colA, colB); //grayscale();
+
   }
 </script>
 
 <script type="module" src="main.js"></script>
-<!-- <script type="module" src="./public/functions/color.js"></script>
-<script type="module" src="./public/functions/shapes.js"></script>
-<script type="module" src="./public/functions/processing.js"></script>
-<script type="module" src="./public/functions/diffuse.js"></script> -->

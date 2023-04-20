@@ -31,13 +31,15 @@ audio = "audio" {return "'audio'"}
 /****** Key Words ******/
 keyword "keyword" = col / difFct / cellFct / 
                     effects / reset / music / 
-					     wait / shapes /
-                    hex  / $[^{} \t\n\r] +
+					shapes /
+                    colInput  / $[^{} \t\n\r] +
 
 // Shapes and styles
 shapes = rect / dots
 //circle = "circle" { return "@circle"; }
-rect = "rect(" _? x:PRIMARY "," _? y:PRIMARY "," _? w:PRIMARY "," _? h:PRIMARY ")"{ return `shape.rect( ${x}, ${y}, ${w}, ${h} )`}
+rect = "rect(" _? x:PRIMARY "," _? y:PRIMARY "," _? w:PRIMARY "," _? h:PRIMARY _? ")"{ return `shape.rect( ${x}, ${y}, ${w}, ${h} )`}
+// circ = "circ(" _? x:PRIMARY "," _? y:PRIMARY "," _? r:PRIMARY _? ")"{ return `shape.circle( ${x}, ${y}, ${r})`}
+
 dots = "dots()"{ return `shape.dots()`}
 
 // triangle = "triangle" { return "@triangle"; }
@@ -45,22 +47,18 @@ dots = "dots()"{ return `shape.dots()`}
 // line = "line" { return "@line"; }
 
 
-// Math
-
-
 /****** Diffuse attributes ****/
 difFct = diffuse / rateA / rateB / feed / kill / size 
 difInput = PRIMARY / audio 
 diffuse  = "diffuse(" bool:boolean ")"{ return `setDiffuse(${bool})`;}
 
-rateA = "rateA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
-rateB = "rateB(" r:difInput ")"{ return `rateB(${r})` ; } 
+rateA = "dA(" r:difInput ")"{ return `rateA(${r})` ; } //change to primary
+rateB = "dB(" r:difInput ")"{ return `rateB(${r})` ; } 
 feed = "feed(" f:difInput ")" { return `feed(${f})` ; } 
 kill = "kill(" k:difInput ")" { return `kill(${k})` ; } 
 size = "size(" s:difInput ")" { return `size(${s})` ; } 
 
-wait = "wait(" t:PRIMARY ")" { return `wait(${t}*1000)` } // time in sec
-reset = "reset" { return `reset()` }
+reset = "reset()" { return `reset()` }
 
 /****** Cellular Automata attributes ****/
 cellFct = automata
@@ -90,11 +88,15 @@ colorB = "colorB(" h:colInput ")"{ return `col.setColor("B", ${h})` ; }
 /** Post Processing **/
 effects = editAttribute / noEffect / effect
 postProcess = "kal" / "blur" / "celShade" / "foggy" / "light" / "noise" / "oldFilm" / "vignette"
-attribute = "size" / "side" 
+attribute = "size" / "side" /
+            "period" / "speed" / "intensity" / 
+            "speckIntensity" / "lineIntensity" / "grainIntensity" /
+            "blurScalar" / "brightnessScalar" / "brightnessExponent"
 
 
-noEffect = "noEffect"{ return `effects.noEffect()` }
-effect = func:postProcess _ { return `effects.postEffect("${func}")`} 
+
+noEffect = "noEffect()"{ return `effects.noEffect()` }
+effect = func:postProcess "()"_ { return `effects.postEffect("${func}")`} 
 effectAttribute = attr:attribute { return `${attr}` }
 
 
